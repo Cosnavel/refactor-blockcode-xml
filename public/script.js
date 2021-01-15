@@ -127,10 +127,6 @@ const blockCodesInQuestionText = getElementInParent(
 )
 const blockCodesInAnswer = getElementInParent('blockcode', 'answer')
 
-//refactorBlockCodeOutsideOfQuestions(blockcodes, questions)
-//refactorBlockCodeInsideOfQuestions()
-/**
- * TODO:
- * [] export HTML File
- * [] try with direct xml file
- * */
+refactorBlockCodeOutsideOfQuestions(blockcodes, questions)
+refactorBlockCodeInsideOfQuestions()
+exportHTML()
