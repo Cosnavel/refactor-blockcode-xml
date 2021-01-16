@@ -65,7 +65,7 @@ function refactorBlockCodeOutsideOfQuestions(blockcodes, questions) {
 
 		if (isNotInQuestion) {
 			let data = {
-				id,
+				filename: `${id}.js`,
 				value: blockcode.innerText,
 			}
 
