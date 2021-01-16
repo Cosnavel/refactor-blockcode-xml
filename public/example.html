@@ -1,0 +1,57 @@
+<html lang="de">
+	<lessons>
+		<lesson>
+			<lesson_name
+				>Typkonvertierung und Nummern, die keine sind</lesson_name
+			>
+			<topics>
+				<li>Typenkonvertierungen kennen.</li>
+			</topics>
+			<h1 id="coercion">Implizite Typkonvertierung</h1>
+
+			<p>
+				Betrachten Sie den Code eines einfachen Kassenrechners. Ein
+				Kassierer gibt die Preise dreier Artikel ein. Die Anwendung soll
+				den Gesamtpreis berechnen und anzeigen.
+			</p>
+			<blockcode numbered="numbered"
+				>let price1 = prompt('Price of article 1?'); let price2 =
+				prompt('Price of article 2?'); let price3 = prompt('Price of
+				article 3?'); console.log('total: ' + (price1 + price2 +
+				price3));
+			</blockcode>
+			<p>
+				Starten Sie das Kassenprogramm und geben Sie dreimal einen Preis
+				von 1 ein. Eigentlich sollte die Anwendung nun
+			</p>
+			<blockcode>total: 3</blockcode>
+			<p>anzeigen. Stattdessen erhalten Sie:</p>
+			<blockcode>total: 111</blockcode>
+
+			<blockcode
+				numbered="numbered"
+				src="accompanying_files/07/examples/number.js"
+			/>
+			<p><b>Beispiele</b></p>
+			<blockcode
+				>3 + 4 // =&gt; 7 '3' + '4' // =&gt; '34' '3' + 4 // =&gt; '34'
+				3 + '4' // =&gt; '34'</blockcode
+			>
+			<h1>Testen Sie Ihr Wissen!</h1>
+			<questions>
+				<question
+					reviewed="reviewed"
+					type="fill_in_the_blanks"
+					public="public"
+				>
+					<question_text>
+						<p>Welchen Rückgabewert hat der folgende Ausdruck?</p>
+						<blockcode>'4' + 5</blockcode>
+					</question_text>
+					<answer correct="correct"><blank>'45'</blank></answer>
+				</question>
+			</questions>
+		</lesson>
+	</lessons>
+	<script src="client.js" defer></script>
+</html>
