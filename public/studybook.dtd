@@ -1,0 +1,296 @@
+<!--================ Character mnemonic entities =========================-->
+<!-- from http://www.w3.org/TR/html4/sgml/entities.html -->
+
+<!ENTITY nbsp   "&#x00A0;"> <!-- no-break space = non-breaking space, U+00A0 ISOnum -->
+<!ENTITY shy    "&#x00AD;"> <!-- soft hyphen  -->
+<!ENTITY thinsp "&#x202F;"> <!-- narrow no-break space -->
+<!ENTITY zwsp   "&#x200B;"> <!-- zero width space for prince, see http://www.princexml.com/bb/viewtopic.php?f=4&t=1160&hilit=hyphens -->
+
+<!ENTITY ndash  "&#8211;"> <!-- – en dash -->
+<!ENTITY mdash  "&#x2014;"> <!-- em dash -->
+<!ENTITY hellip "&#8230;"> <!-- horizontal ellipsis = three dot leader, U+2026 ISOpub  -->
+<!ENTITY times  "&#215;">  <!-- multiplication sign -->
+
+<!ENTITY darr   "&#8595;"> <!-- downwards arrow -->
+<!ENTITY larr   "&#8592;"> <!-- leftwards arrow -->
+<!ENTITY uarr   "&#8593;"> <!-- upwards arrow -->
+<!ENTITY rarr   "&#8594;"> <!-- rightwards arrow -->
+
+<!ENTITY rsquo   "&#8217;"> <!-- right single quotation mark (apostrophe) -->
+<!ENTITY lsquo   "&#8216;"> <!-- left single quotation mark -->
+<!ENTITY raquo  "&#187;">  <!-- right pointing double angle quotation mark -->
+<!ENTITY laquo  "&#171;">  <!-- left pointing double angle quotation mark -->
+<!ENTITY rsaquo "&#8250;"> <!-- › single right-pointing angle quotation mark -->
+<!ENTITY lsaquo "&#8249;"> <!-- ‹ single left-pointing angle quotation mark -->
+<!ENTITY bdquo  "&#8222;"> <!-- double curved low 9 quotation mark -->
+<!ENTITY ldquo  "&#8220;"> <!-- left double curved quotation mark -->
+<!ENTITY rdquo  "&#8221;"> <!-- right double curved quotation mark -->
+
+<!ENTITY double_ltdd "&amp;lt;&amp;lt;">   <!-- << -->
+
+<!--================== Inline level elements Entities =======================-->
+
+<!ENTITY % special "a | br | icon | footnote">
+<!ENTITY % phrase  "i | b | del | u | keyword | kbd | command | code | blank">
+<!ENTITY % inline  "%phrase; | %special;">
+<!ENTITY % Inline  "(#PCDATA | %inline;)*">
+
+<!--================== Block level elements Entities ========================-->
+<!ENTITY % heading "h1 | h2 | h3 ">
+<!ENTITY % lists   "ul | ol | questions">
+<!-- "hint" is in block and block_container, this is not an error, it allows for hint to appear in flow-Elements (e.g. li) -->
+<!ENTITY % block   "%heading; | %lists; | hint | figure | video | p | table | blockcode | console | blockquote | file | social_links">
+<!--
+     block_container elements can include block elements but not
+     other block_container elements, this prevents nesting
+ -->
+<!ENTITY % block_container "hint | browser_output | exercise | assignment | walkthrough">
+<!ENTITY % all_block "%block_container; | %block;">
+<!ENTITY % Flow "(#PCDATA | %block; | %inline;)*">
+
+<!--=================== Inline level elements ===============================-->
+<!ELEMENT b       %Inline;>
+<!ELEMENT i       %Inline;>
+<!ELEMENT del     %Inline;>
+<!ELEMENT u       %Inline;>
+<!ELEMENT keyword %Inline;>
+<!ELEMENT kbd     %Inline;>
+<!ELEMENT command %Inline;>
+
+<!ELEMENT footnote %Inline;>
+<!ELEMENT br EMPTY>
+<!ELEMENT a %Inline;>
+<!ATTLIST a
+    href CDATA #IMPLIED
+>
+
+<!ELEMENT icon EMPTY>
+<!ATTLIST icon
+    src    CDATA #REQUIRED
+    height_in_em CDATA #IMPLIED
+    offset_in_em CDATA #IMPLIED
+>
+
+<!--================== Block level elements =================================-->
+<!ELEMENT h1            %Inline;>
+<!ELEMENT h2            %Inline;>
+<!ELEMENT h3            %Inline;>
+<!ELEMENT figcaption    %Inline;>
+
+<!ATTLIST h1 id CDATA #IMPLIED>
+<!ATTLIST h2 id CDATA #IMPLIED>
+
+<!ELEMENT p             %Inline;>
+<!ELEMENT img           EMPTY>
+<!ATTLIST img
+    src           CDATA #REQUIRED
+    animation_src CDATA #IMPLIED
+>
+
+<!ELEMENT ul        (li)+>
+<!ELEMENT ol        (li)+>
+<!ATTLIST ol
+    start CDATA #IMPLIED>
+
+<!ELEMENT questions (question)+>
+
+<!ELEMENT question (question_text, answer*)>
+<!ATTLIST question
+    public (public) #IMPLIED
+    reviewed (reviewed) #IMPLIED
+    type (free_text|multiple_choice|fill_in_the_blanks) #REQUIRED>
+
+<!ELEMENT social_links (a)+>
+
+<!--================== Code =================================================-->
+
+<!ELEMENT code (#PCDATA) >
+<!ATTLIST code
+    xml:space  (preserve) #FIXED 'preserve'
+>
+
+<!ELEMENT blockcode (#PCDATA) >
+<!ATTLIST blockcode
+    id         CDATA      #IMPLIED
+    src        CDATA      #IMPLIED
+    type       CDATA      #IMPLIED
+    numbered   (numbered) #IMPLIED
+    xml:space  (preserve) #FIXED 'preserve'
+>
+
+<!--================== Blank =================================================-->
+
+<!ELEMENT blank (#PCDATA|option)* >
+<!--ATTLIST blank
+    xml:space  (preserve) #FIXED 'preserve'
+-->
+
+<!ELEMENT option (#PCDATA) >
+<!--ATTLIST option
+    xml:space  (preserve) #FIXED 'preserve'
+-->
+
+<!--================== Console =================================================-->
+
+<!ELEMENT console (blockcommand*, output?) >
+<!ELEMENT blockcommand %Inline; >
+<!ATTLIST blockcommand
+    prompt     CDATA      #IMPLIED
+    type       CDATA      #IMPLIED
+    xml:space  (preserve) #FIXED 'preserve'
+>
+<!ELEMENT output (#PCDATA) >
+
+<!--================== Block container elements =============================-->
+<!ELEMENT blockquote       ((%block;)*) >
+<!ELEMENT preface          ((%block;)*) >
+<!ELEMENT acknowledgements ((%block;)*) >
+<!ELEMENT about_author     ((%block;)*) >
+<!ELEMENT browser_output   (figure|p*)>
+<!ELEMENT figure           ((blockquote|blockcode|img), figcaption?)>
+<!ATTLIST figure
+    float (left|right|free|none) "none"
+    width CDATA #IMPLIED
+    id    CDATA #IMPLIED
+>
+<!ELEMENT hint           (%all_block;)*>
+<!ATTLIST hint
+    src CDATA #IMPLIED
+    type (tip|danger|doc|video) #IMPLIED
+>
+
+<!ELEMENT exercise    (name?, content, answer?)>
+<!ATTLIST exercise
+    id         CDATA        #IMPLIED
+    continued  (continued)  #IMPLIED
+>
+
+<!ELEMENT assignment (name?, content, answer?, criteria?, requirements?, notes?, submission_instructions?)>
+<!ATTLIST assignment
+    id         CDATA        #IMPLIED
+    continued  (continued)  #IMPLIED
+    weight     CDATA        #IMPLIED
+>
+
+<!ELEMENT walkthrough (name?, content)>
+<!ATTLIST walkthrough
+    id        CDATA       #IMPLIED
+    continued (continued) #IMPLIED
+>
+
+<!ELEMENT question_text ((%block;)*)>
+<!ELEMENT answer        %Flow;>
+<!ATTLIST answer
+    correct (correct) #IMPLIED>
+
+<!ELEMENT file %Inline;>
+<!ATTLIST file
+    src CDATA #REQUIRED>
+
+<!ELEMENT video   (video_title?, video_description?, video_speaker?, alternative_content?, video_transcript?)*>
+<!ATTLIST video
+    src           CDATA #REQUIRED
+    poster        CDATA #IMPLIED
+>
+
+<!ELEMENT video_title         %Inline;>
+<!ELEMENT video_description   (%all_block;)*>
+<!ELEMENT video_speaker       %Inline;>
+<!ELEMENT alternative_content (%all_block;)*>
+<!ELEMENT video_transcript (%all_block;)*>
+
+<!--================== Exercise Specific elements =============================-->
+<!ELEMENT topics (li*)>
+<!ELEMENT requirements (li*)>
+
+<!ELEMENT criteria (criterion|criteria_group)*>
+
+<!ELEMENT criterion %Inline;>
+<!ATTLIST criterion
+    type   (boolean|percentage) #REQUIRED
+    weight CDATA                #IMPLIED>
+
+<!ELEMENT criteria_group (criteria_group_name, criterion*)>
+<!ATTLIST criteria_group
+    weight CDATA                #IMPLIED>
+
+<!ELEMENT criteria_group_name %Inline;>
+
+<!ELEMENT notes (%all_block;)*>
+<!ELEMENT submission_instructions (%all_block;)*>
+
+
+<!--================== Exercise, Walktrough, Assignment specific elements ===-->
+<!ELEMENT name %Inline;>
+<!ELEMENT step %Flow;>
+<!ELEMENT content ((%block;|step)*)>
+
+<!--================== Misc =================================================-->
+
+<!ELEMENT li %Flow;>
+
+<!--=================== Head ================================================-->
+<!ELEMENT head (
+    link?,
+    title, subtitle?,
+    trainingcourse?,
+    author,
+    publication_year?,
+    cover_image_credits?, cover_designer?,
+    layout_typesetting?,
+    editor?,
+    translator?, original_title?, original_publication_year?,
+    (learning_objectives | indexterms)*)>
+
+<!ELEMENT link           (#PCDATA)>
+<!ATTLIST link type CDATA #FIXED 'text/css'>
+<!ATTLIST link href CDATA #REQUIRED>
+
+<!ELEMENT title               (#PCDATA)>
+<!ELEMENT subtitle            (#PCDATA)>
+<!ELEMENT trainingcourse      (#PCDATA)>
+<!ELEMENT author              (#PCDATA)>
+<!ELEMENT publication_year    (#PCDATA)>
+<!ELEMENT cover_image_credits (#PCDATA)>
+<!ELEMENT cover_designer      (#PCDATA)>
+<!ELEMENT layout_typesetting  (#PCDATA)>
+<!ELEMENT editor              (#PCDATA)>
+<!ELEMENT translator          (#PCDATA)>
+<!ELEMENT original_title      (#PCDATA)>
+<!ELEMENT original_publication_year         (#PCDATA)>
+
+<!ELEMENT indexterms     (indexterm)+>
+<!ELEMENT indexterm      (#PCDATA)>
+<!ELEMENT learning_objectives (li)+>
+
+<!--=================== Base structure ======================================-->
+<!ELEMENT html (head?, about_author?, acknowledgements?, preface?, lessons?)> <!-- originally studybook, was renamed to html to trigger oxygens html-extensions -->
+<!ATTLIST html
+    lang (de|en)      #IMPLIED
+    project (project) #IMPLIED
+    salutation_du (true|false) #IMPLIED
+>
+<!ELEMENT lessons     (lesson+)>
+<!ELEMENT lesson      (lesson_name, topics?, (%all_block;)*)>
+<!ELEMENT lesson_name (#PCDATA)>
+<!ATTLIST lesson id CDATA #IMPLIED>
+
+<!--=================== Tables===============================================-->
+<!ELEMENT table    (caption?, (thead?, tbody))>
+<!ATTLIST table id CDATA #IMPLIED>
+<!ATTLIST table width CDATA #IMPLIED>
+
+<!ELEMENT caption  %Inline;>
+<!ELEMENT thead    (tr+)>
+<!ELEMENT tbody    (tr+)>
+<!ELEMENT tr       (th|td)+>
+
+<!ELEMENT th       %Flow;>
+<!ATTLIST th width   CDATA #IMPLIED>
+<!ATTLIST th colspan CDATA #IMPLIED>
+<!ATTLIST th rowspan CDATA #IMPLIED>
+
+<!ELEMENT td       %Flow;>
+<!ATTLIST td width   CDATA #IMPLIED>
+<!ATTLIST td colspan CDATA #IMPLIED>
+<!ATTLIST td rowspan CDATA #IMPLIED>

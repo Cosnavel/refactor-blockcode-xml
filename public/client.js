@@ -109,6 +109,9 @@ function refactorBlockCodeInsideOfQuestions() {
 function exportHTML() {
 	html = document.querySelector('html')
 
+	console.log(html)
+	console.log(html.outerHTML)
+	console.log(html.innerHTML)
 	let data = { value: html.outerHTML }
 	fetch(`http://127.0.0.1:8081/html`, {
 		method: 'POST',
