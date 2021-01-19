@@ -478,7 +478,6 @@
             <figure width="80%">
                 <img src="images/screenshots/alert_hello_world.png"/>
             </figure>
-            <!--blockcode numbered="numbered" src="accompanying_files/02/examples/alert.js"/-->
             <p>Die Funktion <code>alert</code> öffnet eine sogenannte <keyword>Alert-Box</keyword> im Browserfenster. Sie ist dafür gedacht, Anwendern wichtige Warnmeldungen anzuzeigen. Die Alert-Box ist ein <keyword>modales</keyword> Popup-Fenster, d.&#x202F;h. der Anwender muss sie wegklicken, um die Website weiter benutzen zu können. Aus Usability-Gründen ist von solchen modalen Popup-Fenstern abzuraten. Setzen Sie sie nur in wenigen begründeten Fällen ein. Außerdem handelt es sich dabei um eine Funktion, die nur in Browserumgebungen zur Verfügung steht. Wenn Sie z.&#x202F;B. auf dem Server unter <i>Node.js</i> programmieren, können Sie sie nicht verwenden.</p>
             <p>Sowohl <code>alert</code> als auch <code>log</code> sind Funktionen. Den Aufruf einer Funktion erkennen Sie an den runden Klammern <code>()</code>. Innerhalb der Klammern hinterlegen Sie ein <keyword>Argument</keyword> &#x2014; wie hier <code>"Hello World"</code>. Was mit dem Argument passiert, ist von der Funktion abhängig. Während <code>alert</code> einen Warnhinweis für den Anwender ausgibt, erzeugt <code>console.log</code> einen Logeintrag für uns Entwickler.</p>
             <figure width="50%">
@@ -8268,7 +8267,6 @@ winners.map((winner, i) =&gt;
             <figure width="30%">
                 <img src="images/chess/chessboard_console_first_line.png"/>
             </figure>
-            <!--blockcode>♜♞♝♛♚♝♞♜</blockcode-->
             <p>Damit Sie die einzelnen Felder später getrennt auslesen und verändern können, ist es hilfreich, ein Array zu verwenden:</p>
             <blockcode>const firstRow = ['♜', '♞', '♝', '♛', '♚', '♝', '♞', '♜'];</blockcode>
             <p>Nun kommt der interessante Teil: Es gibt mehrere Reihen. Das Array müsste also zweidimensional sein. Es gibt aber keine &#187;echten&#171; 2D-Arrays in JS. Stattdessen besteht der Trick darin, Arrays ineinander zu verschachteln. Die Elemente eines Arrays müssen nicht notwendigerweise <code>Strings</code> oder <code>Numbers</code> sein. Sie können auch selbst wieder Arrays sein. Somit lässt sich das gesamte Brett wie folgt darstellen:</p>

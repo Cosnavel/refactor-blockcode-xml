@@ -177,9 +177,8 @@ function refactorBlockCodeOutsideOfQuestions(blockcodes, questions) {
 			}
 
 			postBlockCode(data)
-
-			id++
 			modifyBlockCode(blockcode, `${id}.js`)
+			id++
 		}
 	})
 }
@@ -218,8 +217,9 @@ function exportHTML() {
 	// fse.outputFileSync('dist/html/book.html', html.outerHTML)
 
 	let file2 = fs.readFileSync('./public/index.xml', 'utf8')
-	file2 = file2.replace(/<html.*<\/html>/, html.outerHTML)
-	fse.outputFileSync('dist/html/book.xml', file2)
+	regex = new RegExp(/<html(.|\n)*<\/html>/, 'gm')
+	file3 = file2.replace(regex, html.outerHTML)
+	fse.outputFileSync('dist/html/book.xml', file3)
 }
 
 const blockcodes = getAllBlockCodes()
