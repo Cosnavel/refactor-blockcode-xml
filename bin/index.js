@@ -6,9 +6,10 @@ const { hideBin } = require('yargs/helpers')
 const figlet = require('figlet')
 const inquirer = require('inquirer')
 
-const replaceEntities = require('src/replaceEntities')
-const { parse, refactor } = require('src/refactor')
-const exportHTML = require('src/export')
+const replaceEntities = require('../src/replaceEntities')
+const { parse, refactor } = require('../src/refactor')
+const exportHTML = require('../src/export')
+const resetEntities = require('../src/resetEntities')
 
 console.log(
 	chalk.yellow(
@@ -43,11 +44,22 @@ const argv = yargs(hideBin(process.argv)).options({
 	},
 }).argv
 
+function run(path, output, entities) {
+	replaceEntities(path)
+	dom = parse(path)
+	refactor(dom, output)
+	exportHTML(path, output)
+
+	if (entities) {
+		resetEntities(output)
+	}
+}
+
 if (argv.interactive) {
 	inquirer
 		.prompt([
 			{
-				name: 'input',
+				name: 'path',
 				type: 'input',
 				default: 'book.xml',
 				message:
@@ -68,14 +80,11 @@ if (argv.interactive) {
 					'Should entities been resetted after refactoring the blockcode?',
 			},
 		])
-		.then(path => console.log(path))
+		.then(input => {
+			run(input.path, input.output, input.entities)
+			console.log(chalk.greenBright.bold('Successfully refactored ✅🚀'))
+		})
 } else {
-	replaceEntities(argv.path)
-	refactor(parse(argv.path), argv.output)
-	exportHTML(argv.path, argv.output)
-	console.log(chalk.white.bold(`Input, ${argv.path}!`))
-	console.log(chalk.white.bold(`Output, ${argv.output}!`))
-	console.log(chalk.white.bold(`Entities, ${argv.e}!`))
+	run(argv.path, argv.output, argv.entities)
+	console.log(chalk.greenBright.bold('Successfully refactored ✅🚀'))
 }
-
-console.log(chalk.greenBright.bold('Succuessfully refactored ✅🚀'))

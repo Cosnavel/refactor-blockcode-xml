@@ -7,7 +7,7 @@ const exportHTML = (input, output) => {
 	let inputFile = fs.readFileSync(input, 'utf8')
 	regex = new RegExp(/<html(.|\n)*<\/html>/, 'gm')
 	outputFile = inputFile.replace(regex, html.outerHTML)
-	fse.outputFileSync(`${output}/book.xml`, outputFile)
+	fse.outputFileSync(`${output}book.xml`, outputFile)
 }
 
 module.exports = exportHTML

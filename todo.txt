@@ -1,5 +1,4 @@
 Todo:
 - add Tests
-- make cmd executable
 - write readme
 - register on npm

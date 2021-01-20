@@ -1,23 +1,18 @@
 {
   "name": "refactor-blockcode",
-  "version": "1.0.0",
-  "description": "refactor-blockcode",
-  "author": "wip",
+  "version": "1.0.1",
+  "description": "refactor-blockcode inside xml documents",
+  "author": "Cosnavel",
   "dependencies": {
-    "boxen": "^5.0.0",
     "chalk": "^4.1.0",
     "figlet": "^1.5.0",
     "fs-extra": "^9.0.1",
     "inquirer": "^7.3.3",
     "jsdom": "^16.4.0",
-    "terminal-link": "^2.1.1",
     "yargs": "^16.2.0"
   },
   "main": "bin/index.js",
   "bin": {
     "refactor-blockcode": "./bin/index.js"
-  },
-  "scripts": {
-    "start": "npm i && node index.js"
   }
 }
