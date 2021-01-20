@@ -2,7 +2,7 @@ const jsdom = require('jsdom')
 const fs = require('fs')
 const fse = require('fs-extra')
 
-const { removeEntities } = require('replaceEntities')
+const { removeEntities } = require('./replaceEntities')
 
 const { JSDOM } = jsdom
 

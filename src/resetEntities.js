@@ -1,5 +1,5 @@
 const fs = require('fs')
-const { removeEntities } = require('replaceEntities')
+const { removeEntities } = require('./replaceEntities')
 
 const resetEntities = output => {
 	let bookXML = fs.readFileSync(`${output}book.xml`, 'utf8')

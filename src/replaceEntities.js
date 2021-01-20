@@ -58,4 +58,7 @@ const replaceEntities = filePath => {
 	fs.writeFileSync(filePath, file)
 }
 
-module.exports = { replaceEntities, removeEntities }
+module.exports = {
+	replaceEntities,
+	removeEntities,
+}
