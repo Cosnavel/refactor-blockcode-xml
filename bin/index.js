@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-// Path to book.xml
 // Redo Entities
 // Output folder
 // Success meldung
