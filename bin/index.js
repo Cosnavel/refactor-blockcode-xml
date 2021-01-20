@@ -6,7 +6,9 @@ const { hideBin } = require('yargs/helpers')
 const figlet = require('figlet')
 const inquirer = require('inquirer')
 
-const replaceEntities = require('src/replaceEntities.js')
+const replaceEntities = require('src/replaceEntities')
+const { parse, refactor } = require('src/refactor')
+const exportHTML = require('src/export')
 
 console.log(
 	chalk.yellow(
@@ -69,6 +71,8 @@ if (argv.interactive) {
 		.then(path => console.log(path))
 } else {
 	replaceEntities(argv.path)
+	refactor(parse(argv.path), argv.output)
+	exportHTML(argv.path, argv.output)
 	console.log(chalk.white.bold(`Input, ${argv.path}!`))
 	console.log(chalk.white.bold(`Output, ${argv.output}!`))
 	console.log(chalk.white.bold(`Entities, ${argv.e}!`))

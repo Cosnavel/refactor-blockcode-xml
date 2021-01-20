@@ -1,19 +1,3 @@
-const jsdom = require('jsdom')
-const fs = require('fs')
-const fse = require('fs-extra')
-
-function exportHTML() {
-	html = dom.window.document.querySelector('html')
-	// fse.outputFileSync('dist/html/book.html', html.outerHTML)
-
-	let file2 = fs.readFileSync('./public/index.xml', 'utf8')
-	regex = new RegExp(/<html(.|\n)*<\/html>/, 'gm')
-	file3 = file2.replace(regex, html.outerHTML)
-	fse.outputFileSync('dist/html/book.xml', file3)
-}
-
-exportHTML()
-
 // let newBookXML = fs.readFileSync('./dist/html/book.xml', 'utf8')
 // newBookXML = removeEntities(
 // 	{
