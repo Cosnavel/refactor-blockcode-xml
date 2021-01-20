@@ -1,18 +1,18 @@
 const fs = require('fs')
 
+function replace(searchValue, replaceValue, source) {
+	return source.replaceAll(searchValue, replaceValue)
+}
+
+const removeEntities = (entities, source) => {
+	for (const [key, value] of Object.entries(entities)) {
+		source = replace(key, value, source)
+	}
+	return source
+}
+
 const replaceEntities = filePath => {
 	let file = fs.readFileSync(filePath, 'utf8')
-
-	function replace(searchValue, replaceValue, source) {
-		return source.replaceAll(searchValue, replaceValue)
-	}
-
-	const removeEntities = (entities, source) => {
-		for (const [key, value] of Object.entries(entities)) {
-			source = replace(key, value, source)
-		}
-		return source
-	}
 
 	file = removeEntities(
 		{
@@ -58,4 +58,4 @@ const replaceEntities = filePath => {
 	fs.writeFileSync(filePath, file)
 }
 
-module.exports = replaceEntities
+module.exports = { replaceEntities, removeEntities }

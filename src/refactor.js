@@ -2,6 +2,8 @@ const jsdom = require('jsdom')
 const fs = require('fs')
 const fse = require('fs-extra')
 
+const { removeEntities } = require('replaceEntities')
+
 const { JSDOM } = jsdom
 
 const parse = path => {
@@ -13,17 +15,6 @@ const parse = path => {
 
 const refactor = (dom, output) => {
 	const { document } = dom.window
-
-	function replace(searchValue, replaceValue, source) {
-		return source.replaceAll(searchValue, replaceValue)
-	}
-
-	const removeEntities = (entities, source) => {
-		for (const [key, value] of Object.entries(entities)) {
-			source = replace(key, value, source)
-		}
-		return source
-	}
 
 	function getAllBlockCodes() {
 		return Array.from(document.querySelectorAll('blockcode')).filter(

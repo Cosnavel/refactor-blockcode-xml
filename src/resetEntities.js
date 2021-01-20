@@ -1,17 +1,8 @@
 const fs = require('fs')
+const { removeEntities } = require('replaceEntities')
 
 const resetEntities = output => {
 	let bookXML = fs.readFileSync(`${output}book.xml`, 'utf8')
-	function replace(searchValue, replaceValue, source) {
-		return source.replaceAll(searchValue, replaceValue)
-	}
-
-	const removeEntities = (entities, source) => {
-		for (const [key, value] of Object.entries(entities)) {
-			source = replace(key, value, source)
-		}
-		return source
-	}
 
 	bookXML = removeEntities(
 		{

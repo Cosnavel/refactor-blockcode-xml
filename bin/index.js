@@ -6,7 +6,7 @@ const { hideBin } = require('yargs/helpers')
 const figlet = require('figlet')
 const inquirer = require('inquirer')
 
-const replaceEntities = require('../src/replaceEntities')
+const { replaceEntities } = require('../src/replaceEntities')
 const { parse, refactor } = require('../src/refactor')
 const exportHTML = require('../src/export')
 const resetEntities = require('../src/resetEntities')
