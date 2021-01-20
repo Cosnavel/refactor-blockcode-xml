@@ -1,17 +1,12 @@
 #!/usr/bin/env node
 
-// Redo Entities
-// Output folder
-// Success meldung
-// Siltent
-// Interactive
-
 const chalk = require('chalk')
-const boxen = require('boxen')
 const yargs = require('yargs')
 const { hideBin } = require('yargs/helpers')
 const figlet = require('figlet')
 const inquirer = require('inquirer')
+
+const replaceEntities = require('src/replaceEntities.js')
 
 console.log(
 	chalk.yellow(
@@ -47,7 +42,6 @@ const argv = yargs(hideBin(process.argv)).options({
 }).argv
 
 if (argv.interactive) {
-	console.log('interactive')
 	inquirer
 		.prompt([
 			{
@@ -74,18 +68,10 @@ if (argv.interactive) {
 		])
 		.then(path => console.log(path))
 } else {
-	console.log(argv)
-
+	replaceEntities(argv.path)
 	console.log(chalk.white.bold(`Input, ${argv.path}!`))
 	console.log(chalk.white.bold(`Output, ${argv.output}!`))
 	console.log(chalk.white.bold(`Entities, ${argv.e}!`))
 }
 
-// const boxenOptions = {
-// 	padding: 1,
-// 	margin: 1,
-// 	borderStyle: 'round',
-// 	borderColor: 'green',
-// 	backgroundColor: '#555555',
-// }
-// const msgBox = boxen(greeting, boxenOptions)
+console.log(chalk.greenBright.bold('Succuessfully refactored ✅🚀'))
