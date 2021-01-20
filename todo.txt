@@ -1,4 +1,4 @@
 Todo:
 - add Tests
 - write readme
-- register on npm
+- workflows
