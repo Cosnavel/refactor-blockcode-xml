@@ -11,8 +11,14 @@
     "jsdom": "^16.4.0",
     "yargs": "^16.2.0"
   },
+  "scripts": {
+    "test": "jest --passWithNoTests"
+  },
   "main": "bin/index.js",
   "bin": {
     "refactor-blockcode": "./bin/index.js"
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
   }
 }
