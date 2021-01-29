@@ -37,20 +37,23 @@ const replaceEntities = filePath => {
 			'&bdquo;': '„',
 			'&ldquo;': '“',
 			'&rdquo;': '”',
-			'&table_of_content_solution;':
-				'https://github.com/Webmasters-Europe/js_dom_table_of_content/releases/tag/2.7.0',
-			'&search_and_replace_solution;':
-				'https://github.com/Webmasters-Europe/js_dom_search_and_replace/releases/tag/2.7.0',
-			'&toc_demo;': 'https://tableofcontent.webmasters-akademie.dev/',
-			'&sar_demo;': 'https://search-replace.webmasters-akademie.dev/',
-			'&royal_flush_solution;':
-				'https://github.com/Webmasters-Europe/js_basics_royal_flush/releases/tag/1.9.0',
-			'&flood_fill_solution;':
-				'https://github.com/Webmasters-Europe/js_basics_flood_fill/releases/tag/1.9.0',
-			'&alk_test_solution;':
-				'https://github.com/Webmasters-Europe/js_basics_alk_test/releases/tag/1.9.0',
-
-			'&terminal_demo;': 'https://terminal.webmasters-akademie.dev',
+			'&table_of_content_solution;': '-table_of_content_solution-',
+			'&search_and_replace_solution;': '-search_and_replace_solution-',
+			'&toc_demo;': '-toc_demo-',
+			'&sar_demo;': '-sar_demo-',
+			'&royal_flush_solution;': '-royal_flush_solution-',
+			'&flood_fill_solution;': '-flood_fill_solution-',
+			'&alk_test_solution;': '-alk_test_solution-',
+			'&terminal_demo;': '-terminal_demo-',
+			'&thumbnails_solution;': '-thumbnails_solution-',
+			'&systeminfo_solution;': '-systeminfo_solution-',
+			'&nobelprice_solution;': '-nobelprice_solution-',
+			'&systeminfo_demo;': '-systeminfo_demo-',
+			'&nobelprice_demo;': '-nobelprice_demo-',
+			'&square_solution;': '-square_solution-',
+			'&square_demo;': '-square_demo-',
+			'&tictactoe_solution;': '-tictactoe_solution-',
+			'&tictactoe_demo;': '-tictactoe_demo-',
 		},
 		file,
 	)

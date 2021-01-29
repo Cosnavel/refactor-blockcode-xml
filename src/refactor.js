@@ -17,9 +17,7 @@ const refactor = (dom, output) => {
 	const { document } = dom.window
 
 	function getAllBlockCodes() {
-		return Array.from(document.querySelectorAll('blockcode')).filter(
-			elem => !elem.hasAttribute('src'),
-		)
+		return Array.from(document.querySelectorAll('blockcode')).filter(elem => !elem.hasAttribute('src'))
 	}
 
 	function getAllQuestions() {
@@ -27,9 +25,9 @@ const refactor = (dom, output) => {
 	}
 
 	function getElementInParent(element, parent) {
-		return Array.from(
-			document.querySelectorAll(`${parent} > ${element}`),
-		).filter(elem => !elem.hasAttribute('src'))
+		return Array.from(document.querySelectorAll(`${parent} > ${element}`)).filter(
+			elem => !elem.hasAttribute('src'),
+		)
 	}
 
 	function modifyBlockCode(element, filename) {
@@ -46,6 +44,7 @@ const refactor = (dom, output) => {
 					{
 						'&lt;': '<',
 						'&gt;': '>',
+						'&amp;': '&',
 					},
 					value,
 				)
@@ -60,6 +59,7 @@ const refactor = (dom, output) => {
 					{
 						'&lt;': '<',
 						'&gt;': '>',
+						'&amp;': '&',
 					},
 					value,
 				)
@@ -71,6 +71,7 @@ const refactor = (dom, output) => {
 				{
 					'&lt;': '<',
 					'&gt;': '>',
+					'&amp;': '&',
 				},
 				data.value,
 			)
@@ -78,12 +79,7 @@ const refactor = (dom, output) => {
 		}
 	}
 
-	function getAndEditElementInsideOfNodeArray(
-		nodeList,
-		element,
-		namingIterator,
-		prefix,
-	) {
+	function getAndEditElementInsideOfNodeArray(nodeList, element, namingIterator, prefix) {
 		let i = 1
 		filteredNodes = []
 		nodeList.forEach(node => {
@@ -140,10 +136,7 @@ const refactor = (dom, output) => {
 				'answer',
 			)
 
-			if (
-				(questionTextBlockCodes.length > 0) |
-				(answerBlockCodes.length > 0)
-			) {
+			if ((questionTextBlockCodes.length > 0) | (answerBlockCodes.length > 0)) {
 				persistBlockCode({
 					questionTextBlockCodes,
 					answerBlockCodes,
@@ -156,10 +149,7 @@ const refactor = (dom, output) => {
 	const blockcodes = getAllBlockCodes()
 	const questions = getAllQuestions()
 
-	const blockCodesInQuestionText = getElementInParent(
-		'blockcode',
-		'question_text',
-	)
+	const blockCodesInQuestionText = getElementInParent('blockcode', 'question_text')
 	const blockCodesInAnswer = getElementInParent('blockcode', 'answer')
 
 	refactorBlockCodeOutsideOfQuestions(blockcodes, questions)
