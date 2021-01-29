@@ -1,24 +1,24 @@
 {
-  "name": "refactor-blockcode",
-  "version": "1.0.4",
-  "description": "refactor-blockcode inside xml documents",
-  "author": "Cosnavel",
-  "dependencies": {
-    "chalk": "^4.1.0",
-    "figlet": "^1.5.0",
-    "fs-extra": "^9.0.1",
-    "inquirer": "^7.3.3",
-    "jsdom": "^16.4.0",
-    "yargs": "^16.2.0"
-  },
-  "scripts": {
-    "test": "jest --passWithNoTests"
-  },
-  "main": "bin/index.js",
-  "bin": {
-    "refactor-blockcode": "./bin/index.js"
-  },
-  "devDependencies": {
-    "jest": "^26.6.3"
-  }
+    "name": "refactor-blockcode",
+    "version": "1.0.4",
+    "description": "refactor-blockcode inside xml documents",
+    "author": "Cosnavel",
+    "dependencies": {
+        "chalk": "^4.1.0",
+        "figlet": "^1.5.0",
+        "fs-extra": "^9.0.1",
+        "inquirer": "^7.3.3",
+        "jsdom": "^16.4.0",
+        "yargs": "^16.2.0"
+    },
+    "scripts": {
+        "test": "jest --passWithNoTests"
+    },
+    "main": "bin/index.js",
+    "bin": {
+        "refactor-blockcode": "./bin/index.js"
+    },
+    "devDependencies": {
+        "jest": "^26.6.3"
+    }
 }
