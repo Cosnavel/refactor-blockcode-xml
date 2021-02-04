@@ -2,6 +2,8 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/cosnavel/refactor-blockcode-xml/badge?s=5c835d7d70603985a6d49f59b01cd17489123d14)](https://www.codefactor.io/repository/github/cosnavel/refactor-blockcode-xml)
 
+> 🚨 Node Version >=15 required
+
 ```bash
 npm i -g refactor-blockcode
 ```
