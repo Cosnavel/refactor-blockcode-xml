@@ -25,12 +25,15 @@ npm i -g refactor-blockcode
 ```
 refactor-blockcode -p book.xml
 ```
+
 `
+
 ### Example interactive Mode
 
 ```
 refactor-blockcode -i
 ```
+
 ### Example to check for broken links
 
 ```
