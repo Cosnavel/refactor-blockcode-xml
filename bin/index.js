@@ -5,6 +5,8 @@ const yargs = require('yargs')
 const { hideBin } = require('yargs/helpers')
 const figlet = require('figlet')
 const inquirer = require('inquirer')
+const blc = require('broken-link-checker')
+const fs = require('fs')
 
 const { replaceEntities } = require('../src/replaceEntities')
 const { parse, refactor } = require('../src/refactor')
@@ -34,6 +36,12 @@ const argv = yargs(hideBin(process.argv)).options({
         alias: 'i',
         type: 'boolean',
         description: 'Run interactive mode',
+        default: false,
+    },
+    link: {
+        alias: 'l',
+        type: 'boolean',
+        description: 'Check for broken links',
         default: false,
     },
     entities: {
@@ -84,6 +92,31 @@ if (argv.interactive) {
             run(input.path, input.output, input.entities)
             console.log(chalk.greenBright.bold('Successfully refactored ✅🚀'))
         })
+} else if (argv.link) {
+    replaceEntities(argv.path)
+    let file = fs.readFileSync(argv.path, 'utf8')
+
+    const htmlChecker = new blc.HtmlChecker(
+        { excludeInternalLinks: true },
+        {
+            link: arg => {
+                if (arg.broken && arg.brokenReason !== 'BLC_INVALID') {
+                    console.log(
+                        chalk.yellow.underline(arg.url.original),
+                        '|',
+                        chalk.redBright.bold(arg.brokenReason),
+                        '|',
+                        arg.http?.response?.statusMessage,
+                    )
+                }
+            },
+            complete: () => {
+                console.log(chalk.greenBright.bold('Link Check Complete ✅'))
+            },
+        },
+    )
+
+    htmlChecker.scan(file)
 } else {
     run(argv.path, argv.output, argv.entities)
     console.log(chalk.greenBright.bold('Successfully refactored ✅🚀'))
