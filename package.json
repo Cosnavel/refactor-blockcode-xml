@@ -1,6 +1,6 @@
 {
     "name": "refactor-blockcode",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "refactor-blockcode inside xml documents",
     "author": "Cosnavel",
     "dependencies": {
