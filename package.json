@@ -1,9 +1,10 @@
 {
     "name": "refactor-blockcode",
-    "version": "1.0.5",
+    "version": "1.0.6",
     "description": "refactor-blockcode inside xml documents",
     "author": "Cosnavel",
     "dependencies": {
+        "broken-link-checker": "^0.7.8",
         "chalk": "^4.1.0",
         "figlet": "^1.5.0",
         "fs-extra": "^9.0.1",
