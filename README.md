@@ -7,6 +7,7 @@ npm i -g refactor-blockcode
 ```
 
 ### Options
+
 ```
       --help         Show help                                         [boolean]
       --version      Show version number                               [boolean]
@@ -20,8 +21,13 @@ npm i -g refactor-blockcode
 ```
 
 ### Example to refactor all Blockcodes into seperate files
+
 `refactor-blockcode -p book.xml`
+
 ### Example interactive Mode
+
 `refactor-blockcode -i`
+
 ### Example to check for broken links
+
 `refactor-blockcode -p book.xml -l`
