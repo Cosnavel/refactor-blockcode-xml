@@ -110,13 +110,17 @@ if (argv.interactive) {
                     )
                 }
             },
-            complete: () => {
+            complete: arg => {
                 console.log(chalk.greenBright.bold('Link Check Complete ✅'))
+            },
+            error: error => {
+                console.log(error)
             },
         },
     )
-
+    htmlChecker.clearCache()
     htmlChecker.scan(file)
+    htmlChecker.clearCache()
 } else {
     run(argv.path, argv.output, argv.entities)
     console.log(chalk.greenBright.bold('Successfully refactored ✅🚀'))
