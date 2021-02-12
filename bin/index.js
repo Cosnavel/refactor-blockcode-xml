@@ -5,7 +5,7 @@ const yargs = require('yargs')
 const { hideBin } = require('yargs/helpers')
 const figlet = require('figlet')
 const inquirer = require('inquirer')
-const blc = require('broken-link-checker')
+const blc = require('../src/broken-link-checker')
 const fs = require('fs')
 
 const { replaceEntities } = require('../src/replaceEntities')
@@ -42,6 +42,12 @@ const argv = yargs(hideBin(process.argv)).options({
         alias: 'l',
         type: 'boolean',
         description: 'Check for broken links',
+        default: false,
+    },
+    detailed: {
+        alias: 'd',
+        type: 'boolean',
+        description: 'Output details for checked links',
         default: false,
     },
     entities: {
@@ -96,22 +102,57 @@ if (argv.interactive) {
     replaceEntities(argv.path)
     let file = fs.readFileSync(argv.path, 'utf8')
 
+    let exitCode = 0
+    const brokenLinks = []
+
     const htmlChecker = new blc.HtmlChecker(
-        { excludeInternalLinks: true },
+        {
+            excludeInternalLinks: true,
+            cacheResponses: false,
+            responseTimeout: 120000,
+            retryHeadFail: false,
+            requestMethod: 'HEAD',
+            requestMethod: 'GET',
+            filterLevel: 0,
+            detailedOutput: argv.detailed,
+        },
         {
             link: arg => {
                 if (arg.broken && arg.brokenReason !== 'BLC_INVALID') {
-                    console.log(
-                        chalk.yellow.underline(arg.url.original),
-                        '|',
-                        chalk.redBright.bold(arg.brokenReason),
-                        '|',
-                        arg.http?.response?.statusMessage,
-                    )
+                    exitCode = 1
+                    if (argv.detailed) {
+                        brokenLinks.push([
+                            arg.url.original,
+                            arg.brokenReason,
+                            arg.http?.response?.statusMessage,
+                        ])
+                    } else {
+                        console.log(
+                            chalk.yellow.underline(arg.url.original),
+                            '|',
+                            chalk.redBright.bold(arg.brokenReason),
+                            '|',
+                            arg.http?.response?.statusMessage,
+                        )
+                    }
                 }
             },
-            complete: arg => {
+            complete: () => {
+                htmlChecker.clearCache()
+                if (argv.detailed) {
+                    brokenLinks.map(error => {
+                        console.log(
+                            chalk.yellow.underline(error[0]),
+                            '|',
+                            chalk.redBright.bold(error[1]),
+                            '|',
+                            error[2],
+                        )
+                    })
+                }
+
                 console.log(chalk.greenBright.bold('Link Check Complete ✅'))
+                process.exit(exitCode)
             },
             error: error => {
                 console.log(error)
@@ -120,7 +161,6 @@ if (argv.interactive) {
     )
     htmlChecker.clearCache()
     htmlChecker.scan(file)
-    htmlChecker.clearCache()
 } else {
     run(argv.path, argv.output, argv.entities)
     console.log(chalk.greenBright.bold('Successfully refactored ✅🚀'))
