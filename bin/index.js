@@ -5,7 +5,7 @@ const yargs = require('yargs')
 const { hideBin } = require('yargs/helpers')
 const figlet = require('figlet')
 const inquirer = require('inquirer')
-const blc = require('../src/broken-link-checker')
+const blc = require('../src/broken-link-checker/lib')
 const fs = require('fs')
 
 const { replaceEntities } = require('../src/replaceEntities')

@@ -18,6 +18,7 @@ npm i -g refactor-blockcode
   -o, --output       relative path to a output folder[string] [default: "dist/"]
   -i, --interactive  Run interactive mode             [boolean] [default: false]
   -l, --link         Check for broken links           [boolean] [default: false]
+  -d, --detailed     Output details for checked links [boolean] [default: false]
   -e, --entities     reset entities after refactoring blockcode
                                                       [boolean] [default: false
 ```
