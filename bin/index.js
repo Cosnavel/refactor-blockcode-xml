@@ -111,7 +111,7 @@ if (argv.interactive) {
             cacheResponses: false,
             responseTimeout: 120000,
             retryHeadFail: false,
-            requestMethod: 'HEAD',
+            // requestMethod: 'HEAD',
             requestMethod: 'GET',
             filterLevel: 0,
             detailedOutput: argv.detailed,
