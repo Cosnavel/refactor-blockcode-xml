@@ -1,8 +1,20 @@
-const hljs = require('highlight.js');
-var commonLanguages = ["css", "javascript","json", "http","html", "markdown", "php", "php-template", "plaintext", "sql", "scss",  "xml","typescript", "yaml"];
-
-
-
+const hljs = require('highlight.js')
+var commonLanguages = [
+    'css',
+    'javascript',
+    'json',
+    'http',
+    'html',
+    'markdown',
+    'php',
+    'php-template',
+    'plaintext',
+    'sql',
+    'scss',
+    'xml',
+    'typescript',
+    'yaml',
+]
 
 txt = `KO: nope
 Error: nope
@@ -17,7 +29,7 @@ Error: nope
     at Function.Module.runMain (module.js:684:10)
     at startup (bootstrap_node.js:187:16)`
 response = hljs.highlightAuto(txt, commonLanguages)
-console.log("Should be plaintext")
+console.log('Should be plaintext')
 console.log(response.language)
 console.log(response.relevance)
 
@@ -29,15 +41,14 @@ new Promise(resolve =>
     }, time),
 )`
 response2 = hljs.highlightAuto(js, commonLanguages)
-console.log("Should be js")
+console.log('Should be js')
 console.log(response2.language)
 console.log(response2.relevance)
-
 
 txt2 = `IP address = 54.93.168.85`
 
 response3 = hljs.highlightAuto(txt2, commonLanguages)
-console.log("Should be plaintext")
+console.log('Should be plaintext')
 console.log(response3.language)
 console.log(response3.relevance)
 
@@ -49,7 +60,7 @@ txt3 = `nerdshop_investors/
     +-style.css`
 
 response4 = hljs.highlightAuto(txt3, commonLanguages)
-console.log("Should be plaintext")
+console.log('Should be plaintext')
 console.log(response4.language)
 console.log(response4.relevance)
 
@@ -58,7 +69,7 @@ volume: <span id='volume'>16000000</span><br>
 time: <span id='time'>16:15</span><br>`
 
 response5 = hljs.highlightAuto(html, commonLanguages)
-console.log("Should be html")
+console.log('Should be html')
 console.log(response5.language)
 console.log(response5.relevance)
 
@@ -66,10 +77,9 @@ ejs = `// 06/examples/nerdshop9/public/view_product_edit.js - Zeile 14
 <% if (product.code) { %> disabled <% } %>
 `
 response6 = hljs.highlightAuto(ejs, commonLanguages)
-console.log("Should be js")
+console.log('Should be js')
 console.log(response6.language)
 console.log(response6.relevance)
-
 
 json = `{
     "id": 1,
@@ -86,7 +96,7 @@ json = `{
     "population": "200000"
   } `
 response7 = hljs.highlightAuto(json, commonLanguages)
-console.log("Should be json")
+console.log('Should be json')
 console.log(response7.language)
 console.log(response7.relevance)
 
@@ -111,10 +121,9 @@ export const PriceInput = props => {
 }
 `
 response8 = hljs.highlightAuto(jsx, commonLanguages)
-console.log("Should be js")
+console.log('Should be js')
 console.log(response8.language)
 console.log(response8.relevance)
-
 
 php = `<?php
 Gate::before(function ($user, $ability) {
@@ -123,7 +132,7 @@ Gate::before(function ($user, $ability) {
     }
 });`
 response9 = hljs.highlightAuto(php, commonLanguages)
-console.log("Should be php")
+console.log('Should be php')
 console.log(response9.language)
 console.log(response9.relevance)
 
@@ -135,6 +144,6 @@ I have multiple records!
 I don't have any records!
 @endif`
 response10 = hljs.highlightAuto(blade, commonLanguages)
-console.log("Should be php")
+console.log('Should be php')
 console.log(response10.language)
 console.log(response10.relevance)

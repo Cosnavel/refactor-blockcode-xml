@@ -1,7 +1,7 @@
 const jsdom = require('jsdom')
 const fs = require('fs')
 const fse = require('fs-extra')
-const hljs = require('highlight.js');
+const hljs = require('highlight.js')
 
 const { removeEntities } = require('./replaceEntities')
 
