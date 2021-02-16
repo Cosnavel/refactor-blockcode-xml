@@ -1,6 +1,7 @@
 const jsdom = require('jsdom')
 const fs = require('fs')
 const fse = require('fs-extra')
+const hljs = require('highlight.js');
 
 const { removeEntities } = require('./replaceEntities')
 
@@ -69,6 +70,8 @@ const refactor = (dom, output) => {
             })
         }
         if (data.value && data.filename) {
+            response = hljs.highlightAuto(data.value)
+            console.log(response)
             data.value = removeEntities(
                 {
                     '&lt;': '<',
