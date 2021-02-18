@@ -132,7 +132,7 @@ function copyResponseData(response, link, options) {
         if (reasons['ERRNO_' + response.code] != null) {
             link.brokenReason = 'ERRNO_' + response.code
         } else {
-        /*else if (response.message === "Invalid URL")
+            /*else if (response.message === "Invalid URL")
 		{
 			link.brokenReason = "BLC_INVALID";
 		}*/
