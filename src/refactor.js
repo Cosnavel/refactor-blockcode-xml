@@ -1,11 +1,77 @@
 const jsdom = require('jsdom')
 const fs = require('fs')
 const fse = require('fs-extra')
-const hljs = require('highlight.js');
+const hljs = require('highlight.js')
 
 const { removeEntities } = require('./replaceEntities')
 
 const { JSDOM } = jsdom
+
+const commonLanguages = [
+    'css',
+    'javascript',
+    'json',
+    'html',
+    'markdown',
+    'php',
+    'plaintext',
+    'sql',
+    'scss',
+    'xml',
+    'typescript',
+    'yaml',
+]
+
+const languageExtensions = [
+    {
+        id: 'css',
+        extension: '.css',
+    },
+    {
+        id: 'javascript',
+        extension: '.js',
+    },
+    {
+        id: 'json',
+        extension: '.json',
+    },
+    {
+        id: 'html',
+        extension: '.html',
+    },
+    {
+        id: 'markdown',
+        extension: '.md',
+    },
+    {
+        id: 'php',
+        extension: '.php',
+    },
+    {
+        id: 'plaintext',
+        extension: '.txt',
+    },
+    {
+        id: 'sql',
+        extension: '.sql',
+    },
+    {
+        id: 'scss',
+        extension: '.scss',
+    },
+    {
+        id: 'xml',
+        extension: '.xml',
+    },
+    {
+        id: 'typescript',
+        extension: '.ts',
+    },
+    {
+        id: 'yaml',
+        extension: '.yaml',
+    },
+]
 
 const parse = path => {
     return new JSDOM(fs.readFileSync(path), {
@@ -36,6 +102,28 @@ const refactor = (dom, output) => {
     function modifyBlockCode(element, filename) {
         element.innerHTML = ''
         element.setAttribute('src', `code/${filename}`)
+    }
+
+    function writeCleanBlockcode(filename, value) {
+        value = removeEntities(
+            {
+                '&lt;': '<',
+                '&gt;': '>',
+                '&amp;': '&',
+            },
+            value,
+        )
+        response = hljs.highlightAuto(value, commonLanguages)
+
+        let extension
+        for (lang of languageExtensions) {
+            if (lang.id == response.language && response.relevance >= 9) {
+                extension = lang.extension
+            }
+        }
+        extension ? '' : (extension = '.txt')
+
+        fse.outputFileSync(`${output}code/${filename + extension}`, value)
     }
 
     function persistBlockCode(data) {
@@ -70,8 +158,6 @@ const refactor = (dom, output) => {
             })
         }
         if (data.value && data.filename) {
-            response = hljs.highlightAuto(data.value)
-            console.log(response)
             data.value = removeEntities(
                 {
                     '&lt;': '<',
