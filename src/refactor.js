@@ -122,8 +122,20 @@ const refactor = (dom, output) => {
             }
         }
         extension ? '' : (extension = '.txt')
-
-        fse.outputFileSync(`${output}code/${filename + extension}`, value)
+        //fse.outputFileSync(`${output}code/${filename}`, value)
+        try {
+            fs.writeFileSync(`${output}code/${filename + extension}`, value)
+        } catch (e) {
+            console.log('inherit filename')
+            // try {
+            //     fs.writeFileSync(`${output}code/${new_filename + extension}`, value)
+            // } catch (e) {
+            //     console.error("We couldnt create a proper file for you")
+            //     return
+            // }
+        } finally {
+            console.log('done')
+        }
     }
 
     function persistBlockCode(data) {
@@ -131,42 +143,17 @@ const refactor = (dom, output) => {
         if (questionTextBlockCodes) {
             questionTextBlockCodes.forEach(blockcode => {
                 let { filename, value } = blockcode
-                value = removeEntities(
-                    {
-                        '&lt;': '<',
-                        '&gt;': '>',
-                        '&amp;': '&',
-                    },
-                    value,
-                )
-
-                fse.outputFileSync(`${output}code/${filename}`, value)
+                writeCleanBlockcode(filename, value)
             })
         }
         if (answerBlockCodes) {
             answerBlockCodes.forEach(blockcode => {
                 let { filename, value } = blockcode
-                value = removeEntities(
-                    {
-                        '&lt;': '<',
-                        '&gt;': '>',
-                        '&amp;': '&',
-                    },
-                    value,
-                )
-                fse.outputFileSync(`${output}code/${filename}`, value)
+                writeCleanBlockcode(filename, value)
             })
         }
         if (data.value && data.filename) {
-            data.value = removeEntities(
-                {
-                    '&lt;': '<',
-                    '&gt;': '>',
-                    '&amp;': '&',
-                },
-                data.value,
-            )
-            fse.outputFileSync(`${output}code/${data.filename}`, data.value)
+            writeCleanBlockcode(data.filename, data.value)
         }
     }
 
