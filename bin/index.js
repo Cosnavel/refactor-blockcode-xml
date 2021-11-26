@@ -9,7 +9,7 @@ const blc = require('../src/broken-link-checker/lib')
 const fs = require('fs')
 
 const { replaceEntities } = require('../src/replaceEntities')
-const { parse, refactor } = require('../src/refactor')
+const { parse, refactor, blockcodeFileToInline } = require('../src/refactor')
 const exportHTML = require('../src/export')
 const resetEntities = require('../src/resetEntities')
 
@@ -56,11 +56,25 @@ const argv = yargs(hideBin(process.argv)).options({
         description: 'reset entities after refactoring blockcode',
         default: false,
     },
+    xmlToMarkdown: {
+        alias: 'md',
+        type: 'boolean',
+        description: 'class from xml to markdown',
+        default: false,
+    },
 }).argv
 
 function run(path, output, entities) {
     replaceEntities(path)
     dom = parse(path)
+    if (argv.xmlToMarkdown) {
+        blockcodeFileToInline().then(exportHTML(path, output))
+        // makeXMLCustomTagsMarkdownCompatible()
+        // exportMarkdown()
+
+        return
+    }
+
     refactor(dom, output)
     exportHTML(path, output)
 

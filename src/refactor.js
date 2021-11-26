@@ -13,6 +13,62 @@ const parse = path => {
     })
 }
 
+async function blockcodeFileToInline() {
+    const { document } = dom.window
+
+    function getAllBlockCodesWithoutSource() {
+        return Array.from(document.querySelectorAll('blockcode')).filter(elem =>
+            elem.hasAttribute('src'),
+        )
+    }
+
+    function setBlockCodeToInline(blockcodes) {
+        blockcodes.forEach(blockcode => {
+            let filePath = blockcode.getAttribute('src')
+            // let fileextension = retrieveFileExtionsion(filepath)
+            // let codeLanguage = blockcode.type ?? null
+
+            fs.readFile(filePath, 'utf8', (err, data) => {
+                if (err) {
+                    console.error(err)
+                    return
+                }
+
+                console.log(data)
+                console.log(
+                    removeEntities(
+                        {
+                            '…': '...',
+                            '&': 'UND',
+                            '<': 'KLEINER',
+                        },
+                        data,
+                    ),
+                )
+                blockcode.innerHTML = removeEntities(
+                    {
+                        '…': '...',
+                        '&': 'UND',
+                        '<': 'KLEINER',
+                    },
+                    data,
+                )
+                blockcode.removeAttribute('src')
+
+                fse.remove(filePath, err => {
+                    if (err) return console.error(err)
+                })
+            })
+
+            // if (!fileextension) {
+            //     blockcode.setAttribute('type', ``)
+            // }
+        })
+    }
+    const allBlockcodes = getAllBlockCodesWithoutSource()
+    setBlockCodeToInline(allBlockcodes)
+}
+
 const refactor = (dom, output) => {
     const { document } = dom.window
 
@@ -172,4 +228,5 @@ const refactor = (dom, output) => {
 module.exports = {
     parse,
     refactor,
+    blockcodeFileToInline,
 }
