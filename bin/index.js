@@ -9,7 +9,12 @@ const blc = require('../src/broken-link-checker/lib')
 const fs = require('fs')
 
 const { replaceEntities } = require('../src/replaceEntities')
-const { parse, refactor, blockcodeFileToInline } = require('../src/refactor')
+const {
+    parse,
+    refactor,
+    blockcodeFileToInline,
+    removeDocumentHead,
+} = require('../src/refactor')
 const exportHTML = require('../src/export')
 const resetEntities = require('../src/resetEntities')
 
@@ -68,9 +73,12 @@ function run(path, output, entities) {
     replaceEntities(path)
     dom = parse(path)
     if (argv.xmlToMarkdown) {
-        blockcodeFileToInline().then(exportHTML(path, output))
+        blockcodeFileToInline()
+        removeDocumentHead()
         // makeXMLCustomTagsMarkdownCompatible()
         // exportMarkdown()
+        // console.log(dom.window.document.querySelector('html').innerHTML)
+        exportHTML(path, output)
 
         return
     }

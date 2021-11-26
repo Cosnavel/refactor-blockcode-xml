@@ -13,7 +13,12 @@ const parse = path => {
     })
 }
 
-async function blockcodeFileToInline() {
+function removeDocumentHead() {
+    const { document } = dom.window
+    document.querySelector('head').innerHTML = ''
+}
+
+function blockcodeFileToInline() {
     const { document } = dom.window
 
     function getAllBlockCodesWithoutSource() {
@@ -25,44 +30,33 @@ async function blockcodeFileToInline() {
     function setBlockCodeToInline(blockcodes) {
         blockcodes.forEach(blockcode => {
             let filePath = blockcode.getAttribute('src')
-            // let fileextension = retrieveFileExtionsion(filepath)
-            // let codeLanguage = blockcode.type ?? null
+            let fileExtension = filePath.split('.').pop()
 
-            fs.readFile(filePath, 'utf8', (err, data) => {
-                if (err) {
-                    console.error(err)
-                    return
-                }
+            blockcode.getAttribute('type') ??
+                blockcode.setAttribute('type', fileExtension)
 
-                console.log(data)
-                console.log(
-                    removeEntities(
-                        {
-                            '…': '...',
-                            '&': 'UND',
-                            '<': 'KLEINER',
-                        },
-                        data,
-                    ),
-                )
-                blockcode.innerHTML = removeEntities(
-                    {
-                        '…': '...',
-                        '&': 'UND',
-                        '<': 'KLEINER',
-                    },
-                    data,
-                )
-                blockcode.removeAttribute('src')
+            let data
+            try {
+                data = fs.readFileSync(filePath, 'utf8')
+            } catch (err) {
+                console.log(err)
+                return
+            }
 
-                fse.remove(filePath, err => {
-                    if (err) return console.error(err)
-                })
+            blockcode.innerHTML = removeEntities(
+                {
+                    '…': '...',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '&': '&amp;',
+                },
+                data,
+            )
+            blockcode.removeAttribute('src')
+
+            fse.remove(filePath, err => {
+                if (err) return console.error(err)
             })
-
-            // if (!fileextension) {
-            //     blockcode.setAttribute('type', ``)
-            // }
         })
     }
     const allBlockcodes = getAllBlockCodesWithoutSource()
@@ -147,7 +141,8 @@ const refactor = (dom, output) => {
         filteredNodes = []
         nodeList.forEach(node => {
             if (element.contains(node)) {
-                let filename = `${prefix}${namingIterator}_${i}.js`
+                let fileExtension = node.getAttribute('type') ?? 'txt'
+                let filename = `${prefix}${namingIterator}_${i}.${fileExtension}`
                 filteredNodes.push({
                     filename,
                     value: node.innerHTML,
@@ -171,13 +166,15 @@ const refactor = (dom, output) => {
             })
 
             if (isNotInQuestion) {
+                let fileExtension = blockcode.getAttribute('type') ?? 'txt'
+
                 let data = {
-                    filename: `${id}.js`,
+                    filename: `${id}.${fileExtension}`,
                     value: blockcode.innerHTML,
                 }
 
                 persistBlockCode(data)
-                modifyBlockCode(blockcode, `${id}.js`)
+                modifyBlockCode(blockcode, `${id}.${fileExtension}`)
                 id++
             }
         })
@@ -229,4 +226,5 @@ module.exports = {
     parse,
     refactor,
     blockcodeFileToInline,
+    removeDocumentHead,
 }

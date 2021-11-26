@@ -2,8 +2,6 @@ const fs = require('fs')
 const fse = require('fs-extra')
 
 const exportHTML = (input, output) => {
-    console.log(input)
-    console.log(output)
     html = dom.window.document.querySelector('html')
 
     let inputFile = fs.readFileSync(input, 'utf8')
