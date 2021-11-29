@@ -18,6 +18,122 @@ function removeDocumentHead() {
     document.querySelector('head').innerHTML = ''
 }
 
+function makeXMLCustomTagsMarkdownCompatible() {
+    const { document } = dom.window
+    // remove questions
+    Array.from(document.getElementsByTagName('questions')).forEach(elem => {
+        elem.remove()
+    })
+    // blockcode to code
+    Array.from(document.getElementsByTagName('blockcode')).forEach(elem => {
+        elem.outerHTML = `<pre><code>${elem.innerHTML}</code></pre>`
+    })
+
+    // h3 to h4
+    Array.from(document.getElementsByTagName('h3')).forEach(elem => {
+        elem.outerHTML = `<h4>${elem.innerHTML}</h4>`
+    })
+    // h2 to h3
+    Array.from(document.getElementsByTagName('h2')).forEach(elem => {
+        elem.outerHTML = `<h3>${elem.innerHTML}</h3>`
+    })
+    // h1 to h2
+    Array.from(document.getElementsByTagName('h1')).forEach(elem => {
+        elem.outerHTML = `<h2>${elem.innerHTML}</h2>`
+    })
+
+    // remove assignment stuff
+    Array.from(document.getElementsByTagName('assignement')).forEach(elem => {
+        Array.from(elem.querySelectorAll(':scope > name')).forEach(name => {
+            name.outerHTML = `<h1>${name.innerHTML}</h1>`
+        })
+        Array.from(elem.querySelectorAll(':scope > content')).forEach(
+            content => {
+                content.outerHTML = `${content.innerHTML}`
+            },
+        )
+        Array.from(elem.querySelectorAll(':scope > answer')).forEach(answer => {
+            answer.outerHTML = `<hr/><h2>Lösung</h2>${answer.innerHTML}`
+        })
+        Array.from(elem.querySelectorAll(':scope > criteria')).forEach(
+            criteria => {
+                criteria.remove()
+            },
+        )
+        Array.from(
+            elem.querySelectorAll(':scope > submission_instructions'),
+        ).forEach(submissionInstructions => {
+            submissionInstructions.remove()
+        })
+
+        elem.outerHTML = `${elem.innerHTML}`
+    })
+
+    // remove keyword
+    Array.from(document.getElementsByTagName('keyword')).forEach(elem => {
+        elem.outerHTML = `<b>${elem.innerHTML}</b>`
+    })
+    // remove preface
+    Array.from(document.getElementsByTagName('preface')).forEach(elem => {
+        elem.outerHTML = `<h1>Preface</h1>${elem.innerHTML}`
+    })
+    // remove topic
+    Array.from(document.getElementsByTagName('topics')).forEach(elem => {
+        elem.outerHTML = `<ul>${elem.innerHTML}</ul>`
+    })
+    // remove lesson_name
+    Array.from(document.getElementsByTagName('lesson_name')).forEach(elem => {
+        elem.outerHTML = `<h1>${elem.innerHTML}</h1>`
+    })
+    // remove lesson
+    Array.from(document.getElementsByTagName('lesson')).forEach(elem => {
+        elem.outerHTML = `${elem.innerHTML}`
+    })
+    // remove lessons
+    Array.from(document.getElementsByTagName('lessons')).forEach(elem => {
+        elem.outerHTML = `${elem.innerHTML}`
+    })
+    // remove exercise tag
+    Array.from(document.getElementsByTagName('exercise')).forEach(elem => {
+        elem.outerHTML = `${elem.innerHTML}`
+    })
+    // exercise name to h3
+    Array.from(document.getElementsByTagName('name')).forEach(elem => {
+        elem.outerHTML = `<h3>${elem.innerHTML}</h3>`
+    })
+    // remove exercise content tag
+    Array.from(document.getElementsByTagName('content')).forEach(elem => {
+        elem.outerHTML = `${elem.innerHTML}`
+    })
+    // remove exercise answer tag
+    Array.from(document.getElementsByTagName('answer')).forEach(elem => {
+        elem.outerHTML = `<h4>Answer</h4>${elem.innerHTML}`
+    })
+
+    // walkthrough step to li
+    Array.from(document.getElementsByTagName('step')).forEach(elem => {
+        elem.outerHTML = `<li>${elem.innerHTML}</li>`
+    })
+
+    // remove walkthrough tag and change content to ol
+    Array.from(document.getElementsByTagName('walkthrough')).forEach(elem => {
+        Array.from(elem.querySelectorAll(':scope > content')).forEach(el => {
+            el.outerHTML = `<ol>${el.innerHTML}</ol>`
+        })
+        elem.outerHTML = `${elem.innerHTML}`
+    })
+
+    // remove figure tag
+    Array.from(document.getElementsByTagName('figure')).forEach(elem => {
+        elem.outerHTML = `${elem.innerHTML}`
+    })
+
+    // remove figcaption tag
+    Array.from(document.getElementsByTagName('figcaption')).forEach(elem => {
+        elem.outerHTML = `<p><i>${elem.innerHTML}</i></p>`
+    })
+}
+
 function blockcodeFileToInline() {
     const { document } = dom.window
 
@@ -227,4 +343,5 @@ module.exports = {
     refactor,
     blockcodeFileToInline,
     removeDocumentHead,
+    makeXMLCustomTagsMarkdownCompatible,
 }

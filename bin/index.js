@@ -14,8 +14,9 @@ const {
     refactor,
     blockcodeFileToInline,
     removeDocumentHead,
+    makeXMLCustomTagsMarkdownCompatible,
 } = require('../src/refactor')
-const exportHTML = require('../src/export')
+const { exportHTML, exportMarkdown } = require('../src/export')
 const resetEntities = require('../src/resetEntities')
 
 console.log(
@@ -75,10 +76,9 @@ function run(path, output, entities) {
     if (argv.xmlToMarkdown) {
         blockcodeFileToInline()
         removeDocumentHead()
-        // makeXMLCustomTagsMarkdownCompatible()
-        // exportMarkdown()
-        // console.log(dom.window.document.querySelector('html').innerHTML)
-        exportHTML(path, output)
+        makeXMLCustomTagsMarkdownCompatible()
+        exportMarkdown(output)
+        exportHTML(path, output, true)
 
         return
     }
