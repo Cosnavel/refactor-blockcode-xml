@@ -8,13 +8,15 @@ const inquirer = require('inquirer')
 const blc = require('../src/broken-link-checker/lib')
 const fs = require('fs')
 
-const { replaceEntities } = require('../src/replaceEntities')
+const { replaceEntities, removeComments } = require('../src/replaceEntities')
 const {
     parse,
     refactor,
     blockcodeFileToInline,
     removeDocumentHead,
     makeXMLCustomTagsMarkdownCompatible,
+    makeImageAssetsMarkdownCompatible,
+    makeVideosMarkdownCompatible,
 } = require('../src/refactor')
 const { exportHTML, exportMarkdown } = require('../src/export')
 const resetEntities = require('../src/resetEntities')
@@ -64,24 +66,27 @@ const argv = yargs(hideBin(process.argv)).options({
     },
     xmlToMarkdown: {
         alias: 'md',
-        type: 'boolean',
+        type: 'string',
         description: 'class from xml to markdown',
-        default: false,
     },
 }).argv
 
 function run(path, output, entities) {
     replaceEntities(path)
-    dom = parse(path)
     if (argv.xmlToMarkdown) {
+        removeComments(path)
+        dom = parse(path)
         blockcodeFileToInline()
         removeDocumentHead()
         makeXMLCustomTagsMarkdownCompatible()
-        exportMarkdown(output)
+        makeImageAssetsMarkdownCompatible(argv.xmlToMarkdown)
+        makeVideosMarkdownCompatible()
+        exportMarkdown(output, argv.xmlToMarkdown)
         exportHTML(path, output, true)
 
         return
     }
+    dom = parse(path)
 
     refactor(dom, output)
     exportHTML(path, output)

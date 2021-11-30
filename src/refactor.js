@@ -1,6 +1,7 @@
 const jsdom = require('jsdom')
 const fs = require('fs')
 const fse = require('fs-extra')
+const Minio = require('minio')
 
 const { removeEntities } = require('./replaceEntities')
 
@@ -20,14 +21,16 @@ function removeDocumentHead() {
 
 function makeXMLCustomTagsMarkdownCompatible() {
     const { document } = dom.window
+
     // remove questions
     Array.from(document.getElementsByTagName('questions')).forEach(elem => {
         elem.remove()
     })
     // blockcode to code
-    Array.from(document.getElementsByTagName('blockcode')).forEach(elem => {
-        elem.outerHTML = `<pre><code>${elem.innerHTML}</code></pre>`
-    })
+    // Array.from(document.getElementsByTagName('blockcode')).forEach(elem => {
+    //     let type = elem.getAttribute('type')
+    //     elem.outerHTML = `<pre><code type="${type}">${elem.innerHTML}</code></pre>`
+    // })
 
     // h3 to h4
     Array.from(document.getElementsByTagName('h3')).forEach(elem => {
@@ -40,6 +43,15 @@ function makeXMLCustomTagsMarkdownCompatible() {
     // h1 to h2
     Array.from(document.getElementsByTagName('h1')).forEach(elem => {
         elem.outerHTML = `<h2>${elem.innerHTML}</h2>`
+    })
+
+    // remove keyword
+    Array.from(document.getElementsByTagName('keyword')).forEach(elem => {
+        elem.outerHTML = `<b>${elem.innerHTML}</b>`
+    })
+    // remove topic
+    Array.from(document.getElementsByTagName('topics')).forEach(elem => {
+        elem.outerHTML = `<ul>${elem.innerHTML}</ul>`
     })
 
     // remove assignment stuff
@@ -68,19 +80,18 @@ function makeXMLCustomTagsMarkdownCompatible() {
 
         elem.outerHTML = `${elem.innerHTML}`
     })
-
-    // remove keyword
-    Array.from(document.getElementsByTagName('keyword')).forEach(elem => {
-        elem.outerHTML = `<b>${elem.innerHTML}</b>`
+    // remove about_author stuff
+    Array.from(document.getElementsByTagName('about_author')).forEach(elem => {
+        Array.from(elem.querySelectorAll(':scope > h3')).forEach(name => {
+            name.outerHTML = `<h1>${name.innerHTML}</h1>`
+        })
+        elem.outerHTML = `${elem.innerHTML}`
     })
-    // remove preface
+    // remove preface stuff
     Array.from(document.getElementsByTagName('preface')).forEach(elem => {
-        elem.outerHTML = `<h1>Preface</h1>${elem.innerHTML}`
+        elem.outerHTML = `<h1>Einführung</h1>${elem.innerHTML}`
     })
-    // remove topic
-    Array.from(document.getElementsByTagName('topics')).forEach(elem => {
-        elem.outerHTML = `<ul>${elem.innerHTML}</ul>`
-    })
+
     // remove lesson_name
     Array.from(document.getElementsByTagName('lesson_name')).forEach(elem => {
         elem.outerHTML = `<h1>${elem.innerHTML}</h1>`
@@ -132,6 +143,66 @@ function makeXMLCustomTagsMarkdownCompatible() {
     Array.from(document.getElementsByTagName('figcaption')).forEach(elem => {
         elem.outerHTML = `<p><i>${elem.innerHTML}</i></p>`
     })
+}
+
+function makeImageAssetsMarkdownCompatible(className) {
+    const { document } = dom.window
+    // upload images to s3
+    Array.from(document.getElementsByTagName('img')).forEach(elem => {
+        let src = elem.getAttribute('src')
+
+        if (src && !['http', 'www'].some(w => src.includes(w))) {
+            data = fs.readFileSync(src)
+            uploadImageToS3(data, retrieveFileNameFromPath(src), className)
+            let newSrcForImage = `https://${process.env.MINIO_ENDPOINT}:${
+                process.env.MINIO_PORT
+            }/${
+                process.env.MINIO_BUCKET
+            }/${className}/${retrieveFileNameFromPath(src)}`
+            elem.setAttribute('src', newSrcForImage)
+        }
+    })
+}
+
+function uploadImageToS3(data, filename, className) {
+    require('dotenv').config()
+    const minioClient = new Minio.Client({
+        endPoint: process.env.MINIO_ENDPOINT,
+        port: parseInt(process.env.MINIO_PORT),
+        useSSL: true,
+        accessKey: process.env.MINIO_KEY,
+        secretKey: process.env.MINIO_SECRET,
+    })
+
+    minioClient.putObject(
+        process.env.MINIO_BUCKET,
+        `${className}/${filename}`,
+        data,
+        function (error, objInfo) {
+            if (error) {
+                return console.error(error)
+            }
+        },
+    )
+}
+
+function makeVideosMarkdownCompatible() {
+    const { document } = dom.window
+
+    Array.from(document.getElementsByTagName('video')).forEach(elem => {
+        let src = elem.getAttribute('src')
+
+        Array.from(
+            elem.querySelectorAll(':scope > alternative_content'),
+        ).forEach(name => {
+            name.outerHTML = `${name.innerHTML}`
+        })
+        elem.outerHTML = `<video src="${src}" />${elem.innerHTML}`
+    })
+}
+
+function retrieveFileNameFromPath(path) {
+    return path.split('\\').pop().split('/').pop()
 }
 
 function blockcodeFileToInline() {
@@ -344,4 +415,6 @@ module.exports = {
     blockcodeFileToInline,
     removeDocumentHead,
     makeXMLCustomTagsMarkdownCompatible,
+    makeImageAssetsMarkdownCompatible,
+    makeVideosMarkdownCompatible,
 }

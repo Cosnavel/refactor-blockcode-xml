@@ -1,12 +1,12 @@
 hint => hint (remove inner block elements)
 
+:::info
+content here
+:::
+=> on markdown process
+
 table => to markdown table
 
-oxy_comments => remove
 
 
-remove html comments
-
-
-
-upload images to s3 and insert link
+blockcode preserve type as code type

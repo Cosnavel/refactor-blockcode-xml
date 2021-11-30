@@ -11,6 +11,21 @@ const removeEntities = (entities, source) => {
     return source
 }
 
+function removeComments(filePath) {
+    let file = fs.readFileSync(filePath, 'utf8')
+
+    const regexToRemoveOxygenComments = new RegExp(
+        '<\\?oxy_comment_start.*oxy_comment_end\\?>',
+        'g',
+    )
+    const regexToRemoveHTMLComments = new RegExp('<!--.*-->', 'g')
+
+    file = file.replaceAll(regexToRemoveOxygenComments, '')
+    file = file.replaceAll(regexToRemoveHTMLComments, '')
+
+    fs.writeFileSync(filePath, file)
+}
+
 const replaceEntities = filePath => {
     let file = fs.readFileSync(filePath, 'utf8')
 
@@ -64,4 +79,5 @@ const replaceEntities = filePath => {
 module.exports = {
     replaceEntities,
     removeEntities,
+    removeComments,
 }
