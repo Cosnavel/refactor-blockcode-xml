@@ -7,6 +7,4 @@ content here
 
 table => to markdown table
 
-
-
 blockcode preserve type as code type
