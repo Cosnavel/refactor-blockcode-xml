@@ -2,6 +2,7 @@ const fs = require('fs')
 const fse = require('fs-extra')
 const TurndownService = require('turndown')
 const turndownPluginGfm = require('turndown-plugin-gfm')
+const { removeEntities } = require('./replaceEntities')
 
 const exportHTML = (input, output, asHTML = false) => {
     html = dom.window.document.querySelector('html')
@@ -33,7 +34,7 @@ const exportMarkdown = (output, className) => {
     turndownService.addRule('hint', {
         filter: ['hint'],
         replacement: function (content) {
-            return ':::info\n\n' + content + '\n\n:::'
+            return ':::info\n' + content + '\n:::\n'
         },
     })
     turndownService.addRule('blockcode', {
@@ -42,30 +43,41 @@ const exportMarkdown = (output, className) => {
             let type = node.getAttribute('type')
 
             if (type) {
-                return '```' + type + '\n\n' + content + '\n\n' + '```'
+                return '```' + type + '\n' + content + '\n' + '```\n'
             }
-            return '```' + '\n\n' + content + '\n\n' + '```'
+            return '```' + '\n' + content + '\n' + '```\n'
         },
     })
     turndownService.addRule('video', {
         filter: ['video'],
         replacement: function (content, node, options) {
-            let src = node.getAttribute('src')
+            // let src = node.getAttribute('src')
+            let src = content
 
-            if (!src) return
-
+            if (!src) {
+                return ''
+            }
             let { hostname } = new URL(src)
             if (hostname.includes('vimeo.com')) {
-                return `[${src}](${src})`
+                return `[${src}](${src})\n`
             }
+            // return `::: video ${src} :::\n`
             return `<video>
-            <source src="${src}">
-          </video>`
+                <source src="${src}">
+              </video>\n`
         },
     })
     turndownService.use(turndownPluginGfm.gfm)
     const markdown = turndownService.turndown(preparedHTML)
-    fse.outputFileSync(`${className}.md`, markdown)
+    const markdownWithReplacedEntities = removeEntities(
+        {
+            '&lt;': '<',
+            '&gt;': '>',
+            '&amp;': '&',
+        },
+        markdown,
+    )
+    fse.outputFileSync(`${output}${className}.md`, markdownWithReplacedEntities)
 }
 
 module.exports = { exportHTML, exportMarkdown }
