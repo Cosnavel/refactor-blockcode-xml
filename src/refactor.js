@@ -2,6 +2,7 @@ const jsdom = require('jsdom')
 const fs = require('fs')
 const fse = require('fs-extra')
 const Minio = require('minio')
+const async = require('async')
 
 const { removeEntities } = require('./replaceEntities')
 
@@ -22,134 +23,242 @@ function removeDocumentHead() {
 function makeXMLCustomTagsMarkdownCompatible() {
     const { document } = dom.window
 
-    // remove questions
-    Array.from(document.getElementsByTagName('questions')).forEach(elem => {
-        elem.remove()
-    })
-    // blockcode to code
-    // Array.from(document.getElementsByTagName('blockcode')).forEach(elem => {
-    //     let type = elem.getAttribute('type')
-    //     elem.outerHTML = `<pre><code type="${type}">${elem.innerHTML}</code></pre>`
-    // })
-
-    // h3 to h4
-    Array.from(document.getElementsByTagName('h3')).forEach(elem => {
-        elem.outerHTML = `<h4>${elem.innerHTML}</h4>`
-    })
-    // h2 to h3
-    Array.from(document.getElementsByTagName('h2')).forEach(elem => {
-        elem.outerHTML = `<h3>${elem.innerHTML}</h3>`
-    })
-    // h1 to h2
-    Array.from(document.getElementsByTagName('h1')).forEach(elem => {
-        elem.outerHTML = `<h2>${elem.innerHTML}</h2>`
-    })
-
-    // remove keyword
-    Array.from(document.getElementsByTagName('keyword')).forEach(elem => {
-        elem.outerHTML = `<b>${elem.innerHTML}</b>`
-    })
-    // remove topic
-    Array.from(document.getElementsByTagName('topics')).forEach(elem => {
-        elem.outerHTML = `<ul>${elem.innerHTML}</ul>`
-    })
-
-    // remove assignment stuff
-    Array.from(document.getElementsByTagName('assignement')).forEach(elem => {
-        Array.from(elem.querySelectorAll(':scope > name')).forEach(name => {
-            name.outerHTML = `<h1>${name.innerHTML}</h1>`
-        })
-        Array.from(elem.querySelectorAll(':scope > content')).forEach(
-            content => {
-                content.outerHTML = `${content.innerHTML}`
+    async.series(
+        [
+            function (callback) {
+                const questions = Array.from(
+                    document.getElementsByTagName('questions'),
+                )
+                for (const question of questions) {
+                    question.remove()
+                }
+                callback(null, 'removedQuestions')
             },
-        )
-        Array.from(elem.querySelectorAll(':scope > answer')).forEach(answer => {
-            answer.outerHTML = `<hr/><h2>Lösung</h2>${answer.innerHTML}`
-        })
-        Array.from(elem.querySelectorAll(':scope > criteria')).forEach(
-            criteria => {
-                criteria.remove()
+            //function (callback) {
+            // blockcode to code
+            // Array.from(document.getElementsByTagName('blockcode')).forEach(elem => {
+            //     let type = elem.getAttribute('type')
+            //     elem.outerHTML = `<pre><code type="${type}">${elem.innerHTML}</code></pre>`
+            // })
+            // },
+            function (callback) {
+                const h3s = Array.from(document.getElementsByTagName('h3'))
+                for (const h3 of h3s) {
+                    h3.outerHTML = `<h4>${h3.innerHTML}</h4>`
+                }
+                callback(null, 'h3Toh4')
             },
-        )
-        Array.from(
-            elem.querySelectorAll(':scope > submission_instructions'),
-        ).forEach(submissionInstructions => {
-            submissionInstructions.remove()
-        })
+            function (callback) {
+                const h2s = Array.from(document.getElementsByTagName('h2'))
+                for (const h2 of h2s) {
+                    h2.outerHTML = `<h3>${h2.innerHTML}</h3>`
+                }
+                callback(null, 'h2Toh3')
+            },
+            function (callback) {
+                const h1s = Array.from(document.getElementsByTagName('h1'))
+                for (const h1 of h1s) {
+                    h1.outerHTML = `<h2>${h1.innerHTML}</h2>`
+                }
+                callback(null, 'h1Toh2')
+            },
+            function (callback) {
+                const keywords = Array.from(
+                    document.getElementsByTagName('keyword'),
+                )
+                for (const keyword of keywords) {
+                    keyword.outerHTML = `<b>${keyword.innerHTML}</b>`
+                }
+                callback(null, 'removedKeywords')
+            },
+            function (callback) {
+                const topics = Array.from(
+                    document.getElementsByTagName('topics'),
+                )
+                for (const topic of topics) {
+                    topic.outerHTML = `<ul>${topic.innerHTML}</ul>`
+                }
+                callback(null, 'removedTopics')
+            },
+            function (callback) {
+                const assignements = Array.from(
+                    document.getElementsByTagName('assignment'),
+                )
+                for (const assignement of assignements) {
+                    const names = Array.from(
+                        assignement.querySelectorAll(':scope > name'),
+                    )
+                    for (const name of names) {
+                        name.outerHTML = `<h1>${name.innerHTML}</h1>`
+                    }
+                    const contents = Array.from(
+                        assignement.querySelectorAll(':scope > content'),
+                    )
+                    for (const content of contents) {
+                        content.outerHTML = `${content.innerHTML}`
+                    }
+                    const answers = Array.from(
+                        assignement.querySelectorAll(':scope > answer'),
+                    )
+                    for (const answer of answers) {
+                        answer.outerHTML = `<hr/><h2>Lösung</h2>${answer.innerHTML}`
+                    }
+                    const criterias = Array.from(
+                        assignement.querySelectorAll(':scope > criteria'),
+                    )
+                    for (const criteria of criterias) {
+                        criteria.remove()
+                    }
+                    const submissionInstructions = Array.from(
+                        assignement.querySelectorAll(
+                            ':scope > submission_instructions',
+                        ),
+                    )
+                    for (const submissionInstruction of submissionInstructions) {
+                        submissionInstruction.remove()
+                    }
+                    assignement.outerHTML = `${assignement.innerHTML}`
+                }
+                callback(null, 'convertedAssignments')
+            },
+            function (callback) {
+                const aboutAuthors = Array.from(
+                    document.getElementsByTagName('about_author'),
+                )
 
-        elem.outerHTML = `${elem.innerHTML}`
-    })
-    // remove about_author stuff
-    Array.from(document.getElementsByTagName('about_author')).forEach(elem => {
-        Array.from(elem.querySelectorAll(':scope > h3')).forEach(name => {
-            name.outerHTML = `<h1>${name.innerHTML}</h1>`
-        })
-        elem.outerHTML = `${elem.innerHTML}`
-    })
-    // remove preface stuff
-    Array.from(document.getElementsByTagName('preface')).forEach(elem => {
-        elem.outerHTML = `<h1>Einführung</h1>${elem.innerHTML}`
-    })
+                for (const aboutAuthor of aboutAuthors) {
+                    const aboutAuthorH4s = Array.from(
+                        aboutAuthor.querySelectorAll(':scope > h4'),
+                    )
 
-    // remove lesson_name
-    Array.from(document.getElementsByTagName('lesson_name')).forEach(elem => {
-        elem.outerHTML = `<h1>${elem.innerHTML}</h1>`
-    })
-    // remove lesson
-    Array.from(document.getElementsByTagName('lesson')).forEach(elem => {
-        elem.outerHTML = `${elem.innerHTML}`
-    })
-    // remove lessons
-    Array.from(document.getElementsByTagName('lessons')).forEach(elem => {
-        elem.outerHTML = `${elem.innerHTML}`
-    })
-    // remove exercise tag
-    Array.from(document.getElementsByTagName('exercise')).forEach(elem => {
-        elem.outerHTML = `${elem.innerHTML}`
-    })
-    // exercise name to h3
-    Array.from(document.getElementsByTagName('name')).forEach(elem => {
-        elem.outerHTML = `<h3>${elem.innerHTML}</h3>`
-    })
-    // remove exercise content tag
-    Array.from(document.getElementsByTagName('content')).forEach(elem => {
-        elem.outerHTML = `${elem.innerHTML}`
-    })
-    // remove exercise answer tag
-    Array.from(document.getElementsByTagName('answer')).forEach(elem => {
-        elem.outerHTML = `<h4>Answer</h4>${elem.innerHTML}`
-    })
+                    for (const aboutAuthorH4 of aboutAuthorH4s) {
+                        aboutAuthorH4.outerHTML = `<h1>${aboutAuthorH4.innerHTML}</h1>`
+                    }
 
-    // walkthrough step to li
-    Array.from(document.getElementsByTagName('step')).forEach(elem => {
-        elem.outerHTML = `<li>${elem.innerHTML}</li>`
-    })
+                    aboutAuthor.outerHTML = `${aboutAuthor.innerHTML}`
+                }
+                callback(null, 'convertedAboutAuthor')
+            },
+            function (callback) {
+                Array.from(document.getElementsByTagName('preface')).forEach(
+                    elem => {
+                        elem.outerHTML = `<h1>Einführung</h1>${elem.innerHTML}`
+                    },
+                ),
+                    callback(null, 'convertedPreface')
+            },
+            function (callback) {
+                Array.from(
+                    document.getElementsByTagName('lesson_name'),
+                ).forEach(elem => {
+                    elem.outerHTML = `<h1>${elem.innerHTML}</h1>`
+                }),
+                    callback(null, 'convertedLessonName')
+            },
+            function (callback) {
+                Array.from(document.getElementsByTagName('lesson')).forEach(
+                    elem => {
+                        elem.outerHTML = `${elem.innerHTML}`
+                    },
+                ),
+                    callback(null, 'removedLesson')
+            },
+            function (callback) {
+                Array.from(document.getElementsByTagName('lessons')).forEach(
+                    elem => {
+                        elem.outerHTML = `${elem.innerHTML}`
+                    },
+                ),
+                    callback(null, 'removedLessons')
+            },
+            function (callback) {
+                Array.from(document.getElementsByTagName('exercise')).forEach(
+                    elem => {
+                        elem.outerHTML = `${elem.innerHTML}`
+                    },
+                ),
+                    callback(null, 'convertedExercises')
+            },
+            function (callback) {
+                Array.from(document.getElementsByTagName('name')).forEach(
+                    elem => {
+                        elem.outerHTML = `<h3>${elem.innerHTML}</h3>`
+                    },
+                ),
+                    callback(null, 'convertedExerciseNameToH3')
+            },
+            function (callback) {
+                Array.from(document.getElementsByTagName('content')).forEach(
+                    elem => {
+                        elem.outerHTML = `${elem.innerHTML}`
+                    },
+                ),
+                    callback(null, 'removedExerciseContent')
+            },
+            function (callback) {
+                Array.from(document.getElementsByTagName('answer')).forEach(
+                    elem => {
+                        elem.outerHTML = `<h4>Answer</h4>${elem.innerHTML}`
+                    },
+                ),
+                    callback(null, 'convertedExerciseAnswers')
+            },
+            function (callback) {
+                Array.from(document.getElementsByTagName('step')).forEach(
+                    elem => {
+                        elem.outerHTML = `<li>${elem.innerHTML}</li>`
+                    },
+                ),
+                    callback(null, 'convertedWalkthroughSteps')
+            },
+            function (callback) {
+                Array.from(
+                    document.getElementsByTagName('walkthrough'),
+                ).forEach(elem => {
+                    Array.from(
+                        elem.querySelectorAll(':scope > content'),
+                    ).forEach(el => {
+                        el.outerHTML = `<ol>${el.innerHTML}</ol>`
+                    })
+                    elem.outerHTML = `${elem.innerHTML}`
+                }),
+                    callback(null, 'convertedWalkthroughs')
+            },
+            function (callback) {
+                Array.from(document.getElementsByTagName('figure')).forEach(
+                    elem => {
+                        elem.outerHTML = `${elem.innerHTML}`
+                    },
+                    callback(null, 'removedFigures'),
+                )
+            },
+            function (callback) {
+                const figcaptions = Array.from(
+                    document.getElementsByTagName('figcaption'),
+                )
 
-    // remove walkthrough tag and change content to ol
-    Array.from(document.getElementsByTagName('walkthrough')).forEach(elem => {
-        Array.from(elem.querySelectorAll(':scope > content')).forEach(el => {
-            el.outerHTML = `<ol>${el.innerHTML}</ol>`
-        })
-        elem.outerHTML = `${elem.innerHTML}`
-    })
+                for (const figcaption of figcaptions) {
+                    figcaption.outerHTML = `<p><i>${figcaption.innerHTML}</i></p>`
+                }
 
-    // remove figure tag
-    Array.from(document.getElementsByTagName('figure')).forEach(elem => {
-        elem.outerHTML = `${elem.innerHTML}`
-    })
-
-    // remove figcaption tag
-    Array.from(document.getElementsByTagName('figcaption')).forEach(elem => {
-        elem.outerHTML = `<p><i>${elem.innerHTML}</i></p>`
-    })
+                callback(null, 'removedFigcaptions')
+            },
+        ],
+        function (err, results) {
+            //debugging only
+            // console.log('done converting tags'), console.log(results)
+        },
+    )
 }
 
 function makeImageAssetsMarkdownCompatible(className) {
     const { document } = dom.window
     // upload images to s3
-    Array.from(document.getElementsByTagName('img')).forEach(elem => {
-        let src = elem.getAttribute('src')
+
+    const images = Array.from(document.getElementsByTagName('img'))
+
+    for (const img of images) {
+        let src = img.getAttribute('src')
 
         if (src && !['http', 'www'].some(w => src.includes(w))) {
             data = fs.readFileSync(src)
@@ -159,9 +268,9 @@ function makeImageAssetsMarkdownCompatible(className) {
             }/${
                 process.env.MINIO_BUCKET
             }/${className}/${retrieveFileNameFromPath(src)}`
-            elem.setAttribute('src', newSrcForImage)
+            img.setAttribute('src', newSrcForImage)
         }
-    })
+    }
 }
 
 function uploadImageToS3(data, filename, className) {
@@ -197,7 +306,7 @@ function makeVideosMarkdownCompatible() {
         ).forEach(name => {
             name.outerHTML = `${name.innerHTML}`
         })
-        elem.outerHTML = `<video src="${src}" />${elem.innerHTML}`
+        elem.outerHTML = `<video>${src}</video>${elem.innerHTML}`
     })
 }
 
