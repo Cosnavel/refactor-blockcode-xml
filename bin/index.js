@@ -94,10 +94,10 @@ function run(path, output, entities) {
                         callback(null, 'makeXMLCustomTagsMarkdownCompatible')
                 },
                 // disable for faster runtime in development
-                // function (callback) {
-                //     makeImageAssetsMarkdownCompatible(argv.xmlToMarkdown),
-                //         callback(null, 'makeImageAssetsMarkdownCompatible')
-                // },
+                function (callback) {
+                    makeImageAssetsMarkdownCompatible(argv.xmlToMarkdown),
+                        callback(null, 'makeImageAssetsMarkdownCompatible')
+                },
                 function (callback) {
                     makeVideosMarkdownCompatible(),
                         callback(null, 'makeVideosMarkdownCompatible')
@@ -107,9 +107,9 @@ function run(path, output, entities) {
                         callback(null, 'exportMarkdown')
                 },
                 // for debbuging only
-                function (callback) {
-                    exportHTML(path, output, true), callback(null, 'exportHTML')
-                },
+                // function (callback) {
+                //     exportHTML(path, output, true), callback(null, 'exportHTML')
+                // },
             ],
             function (err, results) {
                 //debugging only

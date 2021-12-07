@@ -41,11 +41,14 @@ const exportMarkdown = (output, className) => {
         filter: ['blockcode'],
         replacement: function (content, node, options) {
             let type = node.getAttribute('type')
+            let filePath = node.getAttribute('src')
+
+            let data = fs.readFileSync(filePath, 'utf8')
 
             if (type) {
-                return '```' + type + '\n' + content + '\n' + '```\n'
+                return '```' + type + '\n' + data + '\n' + '```\n'
             }
-            return '```' + '\n' + content + '\n' + '```\n'
+            return '```' + '\n' + data + '\n' + '```\n'
         },
     })
     turndownService.addRule('video', {
