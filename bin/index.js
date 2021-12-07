@@ -7,6 +7,7 @@ const figlet = require('figlet')
 const inquirer = require('inquirer')
 const blc = require('../src/broken-link-checker/lib')
 const fs = require('fs')
+const async = require('async')
 
 const { replaceEntities, removeComments } = require('../src/replaceEntities')
 const {
@@ -70,20 +71,51 @@ const argv = yargs(hideBin(process.argv)).options({
         description: 'class from xml to markdown',
     },
 }).argv
-
 function run(path, output, entities) {
     replaceEntities(path)
     if (argv.xmlToMarkdown) {
-        removeComments(path)
         dom = parse(path)
-        blockcodeFileToInline()
-        removeDocumentHead()
-        makeXMLCustomTagsMarkdownCompatible()
-        makeImageAssetsMarkdownCompatible(argv.xmlToMarkdown)
-        makeVideosMarkdownCompatible()
-        exportMarkdown(output, argv.xmlToMarkdown)
-        exportHTML(path, output, true)
+        async.series(
+            [
+                function (callback) {
+                    removeComments(path)
+                    callback(null, 'removeComments')
+                },
 
+                function (callback) {
+                    blockcodeFileToInline(),
+                        callback(null, 'blockcodeFileToInline')
+                },
+                function (callback) {
+                    removeDocumentHead(), callback(null, 'removeDocumentHead')
+                },
+                function (callback) {
+                    makeXMLCustomTagsMarkdownCompatible(),
+                        callback(null, 'makeXMLCustomTagsMarkdownCompatible')
+                },
+                // disable for faster runtime in development
+                // function (callback) {
+                //     makeImageAssetsMarkdownCompatible(argv.xmlToMarkdown),
+                //         callback(null, 'makeImageAssetsMarkdownCompatible')
+                // },
+                function (callback) {
+                    makeVideosMarkdownCompatible(),
+                        callback(null, 'makeVideosMarkdownCompatible')
+                },
+                function (callback) {
+                    exportMarkdown(output, argv.xmlToMarkdown),
+                        callback(null, 'exportMarkdown')
+                },
+                // for debbuging only
+                function (callback) {
+                    exportHTML(path, output, true), callback(null, 'exportHTML')
+                },
+            ],
+            function (err, results) {
+                //debugging only
+                // console.log('done everything'), console.log(results)
+            },
+        )
         return
     }
     dom = parse(path)
@@ -191,4 +223,5 @@ if (argv.interactive) {
 } else {
     run(argv.path, argv.output, argv.entities)
     console.log(chalk.greenBright.bold('Successfully refactored ✅🚀'))
+    process.exit(0)
 }
