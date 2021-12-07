@@ -4,6 +4,7 @@
     "description": "refactor-blockcode inside xml documents",
     "author": "Cosnavel",
     "dependencies": {
+        "async": "^3.2.2",
         "bhttp": "^1.2.1",
         "calmcard": "~0.1.1",
         "chalk": "^4.1.0",
