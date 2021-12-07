@@ -58,8 +58,18 @@ function makeXMLCustomTagsMarkdownCompatible() {
             function (callback) {
                 const h1s = Array.from(document.getElementsByTagName('h1'))
                 for (const h1 of h1s) {
-                    // if (!h1.innerHTML.contains())
-                    h1.outerHTML = `<h2>${h1.innerHTML}</h2>`
+                    if (
+                        h1.innerHTML
+                            .toLowerCase()
+                            .includes('teste dein wissen') |
+                        h1.innerHTML
+                            .toLowerCase()
+                            .includes('testen sie ihr wissen')
+                    ) {
+                        h1.remove()
+                    } else {
+                        h1.outerHTML = `<h2>${h1.innerHTML}</h2>`
+                    }
                 }
                 callback(null, 'h1Toh2')
             },
