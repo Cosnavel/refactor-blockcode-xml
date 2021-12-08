@@ -193,7 +193,7 @@ function makeXMLCustomTagsMarkdownCompatible() {
             function (callback) {
                 Array.from(document.getElementsByTagName('name')).forEach(
                     elem => {
-                        elem.outerHTML = `<h3>${elem.innerHTML}</h3>`
+                        elem.outerHTML = `<h3>Übung: ${elem.innerHTML}</h3>`
                     },
                 ),
                     callback(null, 'convertedExerciseNameToH3')
@@ -209,7 +209,7 @@ function makeXMLCustomTagsMarkdownCompatible() {
             function (callback) {
                 Array.from(document.getElementsByTagName('answer')).forEach(
                     elem => {
-                        elem.outerHTML = `<h4>Answer</h4>${elem.innerHTML}`
+                        elem.outerHTML = `<h4>Lösung zur Übung </h4>${elem.innerHTML}`
                     },
                 ),
                     callback(null, 'convertedExerciseAnswers')
