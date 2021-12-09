@@ -87,7 +87,7 @@ function makeXMLCustomTagsMarkdownCompatible() {
                     document.getElementsByTagName('topics'),
                 )
                 for (const topic of topics) {
-                    topic.outerHTML = `<ul>${topic.innerHTML}</ul>`
+                    topic.outerHTML = `<p>In dieser Lektion lernst du:</p><ul>${topic.innerHTML}</ul>`
                 }
                 callback(null, 'removedTopics')
             },
