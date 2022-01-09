@@ -4,6 +4,15 @@ const fse = require('fs-extra')
 const Minio = require('minio')
 const async = require('async')
 
+require('dotenv').config()
+const minioClient = new Minio.Client({
+    endPoint: process.env.MINIO_ENDPOINT,
+    port: parseInt(process.env.MINIO_PORT),
+    useSSL: true,
+    accessKey: process.env.MINIO_KEY,
+    secretKey: process.env.MINIO_SECRET,
+})
+
 const { removeEntities } = require('./replaceEntities')
 
 const { JSDOM } = jsdom
@@ -264,7 +273,6 @@ function makeXMLCustomTagsMarkdownCompatible() {
 
 function makeImageAssetsMarkdownCompatible(className) {
     const { document } = dom.window
-    // upload images to s3
 
     const images = Array.from(document.getElementsByTagName('img'))
 
@@ -272,8 +280,7 @@ function makeImageAssetsMarkdownCompatible(className) {
         let src = img.getAttribute('src')
 
         if (src && !['http', 'www'].some(w => src.includes(w))) {
-            data = fs.readFileSync(src)
-            uploadImageToS3(data, retrieveFileNameFromPath(src), className)
+            uploadImageToS3(src, retrieveFileNameFromPath(src), className)
             let newSrcForImage = `https://${process.env.MINIO_ENDPOINT}:${
                 process.env.MINIO_PORT
             }/${
@@ -284,24 +291,16 @@ function makeImageAssetsMarkdownCompatible(className) {
     }
 }
 
-function uploadImageToS3(data, filename, className) {
-    require('dotenv').config()
-    const minioClient = new Minio.Client({
-        endPoint: process.env.MINIO_ENDPOINT,
-        port: parseInt(process.env.MINIO_PORT),
-        useSSL: true,
-        accessKey: process.env.MINIO_KEY,
-        secretKey: process.env.MINIO_SECRET,
-    })
-
-    minioClient.putObject(
+const uploadImageToS3 = async (filePath, filename, className) => {
+    await minioClient.fPutObject(
         process.env.MINIO_BUCKET,
         `${className}/${filename}`,
-        data,
+        filePath,
         function (error, objInfo) {
             if (error) {
-                return console.error(error)
+                return console.log(error)
             }
+            console.log(objInfo.etag)
         },
     )
 }

@@ -71,53 +71,10 @@ const argv = yargs(hideBin(process.argv)).options({
         description: 'class from xml to markdown',
     },
 }).argv
-function run(path, output, entities) {
-    replaceEntities(path)
-    if (argv.xmlToMarkdown) {
-        dom = parse(path)
-        async.series(
-            [
-                function (callback) {
-                    removeComments(path)
-                    callback(null, 'removeComments')
-                },
 
-                function (callback) {
-                    blockcodeFileToInline(),
-                        callback(null, 'blockcodeFileToInline')
-                },
-                function (callback) {
-                    removeDocumentHead(), callback(null, 'removeDocumentHead')
-                },
-                function (callback) {
-                    makeXMLCustomTagsMarkdownCompatible(),
-                        callback(null, 'makeXMLCustomTagsMarkdownCompatible')
-                },
-                // disable for faster runtime in development
-                function (callback) {
-                    makeImageAssetsMarkdownCompatible(argv.xmlToMarkdown),
-                        callback(null, 'makeImageAssetsMarkdownCompatible')
-                },
-                function (callback) {
-                    makeVideosMarkdownCompatible(),
-                        callback(null, 'makeVideosMarkdownCompatible')
-                },
-                function (callback) {
-                    exportMarkdown(output, argv.xmlToMarkdown),
-                        callback(null, 'exportMarkdown')
-                },
-                // for debbuging only
-                // function (callback) {
-                //     exportHTML(path, output, true), callback(null, 'exportHTML')
-                // },
-            ],
-            function (err, results) {
-                //debugging only
-                // console.log('done everything'), console.log(results)
-            },
-        )
-        return
-    }
+function refactorBlockCodeToFiles(path, output, entities) {
+    replaceEntities(path)
+
     dom = parse(path)
 
     refactor(dom, output)
@@ -126,6 +83,58 @@ function run(path, output, entities) {
     if (entities) {
         resetEntities(output)
     }
+}
+
+function refactorXmlToMd(path, output) {
+    replaceEntities(path)
+    dom = parse(path)
+
+    async.series(
+        [
+            function (callback) {
+                removeComments(path)
+                callback(null, 'removeComments')
+            },
+
+            function (callback) {
+                blockcodeFileToInline(), callback(null, 'blockcodeFileToInline')
+            },
+            function (callback) {
+                removeDocumentHead(), callback(null, 'removeDocumentHead')
+            },
+            function (callback) {
+                makeXMLCustomTagsMarkdownCompatible(),
+                    callback(null, 'makeXMLCustomTagsMarkdownCompatible')
+            },
+            // disable for faster runtime in development
+            function (callback) {
+                makeImageAssetsMarkdownCompatible(argv.xmlToMarkdown),
+                    callback(null, 'makeImageAssetsMarkdownCompatible')
+            },
+            function (callback) {
+                makeVideosMarkdownCompatible(),
+                    callback(null, 'makeVideosMarkdownCompatible')
+            },
+            function (callback) {
+                exportMarkdown(output, argv.xmlToMarkdown),
+                    callback(null, 'exportMarkdown')
+            },
+            // for debbuging only
+            // function (callback) {
+            //     exportHTML(path, output, true), callback(null, 'exportHTML')
+            // },
+        ],
+        function (err, results) {
+            //debugging only
+            // console.log('done everything'), console.log(results)
+            console.log(
+                chalk.greenBright.bold(
+                    'Successfully transformed to Markdown ✅🚀',
+                ),
+            )
+        },
+    )
+    return
 }
 
 if (argv.interactive) {
@@ -154,7 +163,7 @@ if (argv.interactive) {
             },
         ])
         .then(input => {
-            run(input.path, input.output, input.entities)
+            refactorBlockCodeToFiles(input.path, input.output, input.entities)
             console.log(chalk.greenBright.bold('Successfully refactored ✅🚀'))
         })
 } else if (argv.link) {
@@ -220,8 +229,10 @@ if (argv.interactive) {
     )
     htmlChecker.clearCache()
     htmlChecker.scan(file)
+} else if (argv.xmlToMarkdown) {
+    refactorXmlToMd(argv.path, argv.output)
 } else {
-    run(argv.path, argv.output, argv.entities)
+    refactorBlockCodeToFiles(argv.path, argv.output, argv.entities)
     console.log(chalk.greenBright.bold('Successfully refactored ✅🚀'))
     process.exit(0)
 }
